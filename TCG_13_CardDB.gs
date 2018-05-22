@@ -1,98 +1,111 @@
 // **********************************************
-// function fcnUpdateArmyDB()
+// function fcnUpdateCardDB()
 //
-// This function updates the Player Army List  
+// This function updates the Player card database  
+// with the list of cards sent in arguments
 //
 // **********************************************
 
-function fcnUpdateArmyDB(ss, shtConfig, cfgColRndSht, Player){
-  
-  Logger.log("Routine: fcnUpdateArmyDB");
-  
-  var shtIDs = shtConfig.getRange(4,7,20,1).getValues();
-  var cfgArmyBuild = shtConfig.getRange(4,33,20,1).getValues();
-  
-  // Column Values for Rounds Sheets
-  var colRndPlyr =     cfgColRndSht[ 0][0];
-  var colRndBalBonus = cfgColRndSht[10][0];
-  
-  // Config Spreadsheet
-  var ssArmyDBID =     shtIDs[2][0];
-  var ssArmyListEnID = shtIDs[3][0];
-  var ssArmyListFrID = shtIDs[4][0];
-
-  var armyBldRating =       cfgArmyBuild[0][0];
-  var armyBldCurrRoundVal = cfgArmyBuild[4][0];
-  
-  // Gets New Balance Bonus for Player from Cumulative Results Sheet
-  var shtCumul = ss.getSheetByName('Cumulative Results');
-  
-  // Find Player Rows : subFindPlayerRow(sheet, rowStart, colPlyr, length, PlayerName)
-  var RndPlyr2Row = subFindPlayerRow(shtCumul, 5, colRndPlyr, 32, Player);  
-  
-  var BalanceBonusVal = shtCumul.getRange(RndPlyr2Row,colRndBalBonus).getValue();
-  Logger.log('Total Balance Bonus: %s',BalanceBonusVal);
+function fcnUpdateCardDB(shtConfig, Player, CardList, PackData, shtTest){
   
   // Player Card DB Spreadsheet
-  Logger.log("Player Army DB: %s",Player);
-  var shtArmyDB = SpreadsheetApp.openById(ssArmyDBID).getSheetByName(Player);
-  var rngArmyDBCurrRoundPwrLvl = shtArmyDB.getRange(5,9);
-  var rngArmyDBAvailPwrLvl = shtArmyDB.getRange(5,10);
-  var rngArmyDBCurrRoundPoints = shtArmyDB.getRange(5,11);
-  var rngArmyDBAvailPoints = shtArmyDB.getRange(5,12);
-
-  // Army List Spreadsheet
-  var shtArmyListEn = SpreadsheetApp.openById(ssArmyListEnID).getSheetByName(Player);
-  var rngArmyListEnCurrRoundPwrLvl = shtArmyListEn.getRange(5,9);
-  var rngArmyListEnBonusPwrLvl = shtArmyListEn.getRange(5,10);
-  var rngArmyListEnCurrRoundPoints = shtArmyListEn.getRange(5,11);
-  var rngArmyListEnBonusPoints = shtArmyListEn.getRange(5,12);
-  
-  var shtArmyListFr = SpreadsheetApp.openById(ssArmyListFrID).getSheetByName(Player);
-  var rngArmyListFrCurrRoundPwrLvl = shtArmyListFr.getRange(5,9);
-  var rngArmyListFrBonusPwrLvl = shtArmyListFr.getRange(5,10);
-  var rngArmyListFrCurrRoundPoints = shtArmyListFr.getRange(5,11);
-  var rngArmyListFrBonusPoints = shtArmyListFr.getRange(5,12);
-  
-  // Get Cells to Update according to the Army Rating Mode (Power Level or Points)
-  if(armyBldRating == 'Power Level'){
-    // Update the Army DB
-    rngArmyDBCurrRoundPwrLvl.setValue(armyBldCurrRoundVal);
-    rngArmyDBAvailPwrLvl.setValue(BalanceBonusVal);
+  var shtIDs = shtConfig.getRange(4,7,24,1).getValues();
+  var shtCardDB = SpreadsheetApp.openById(shtIDs[2][0]).getSheetByName(Player);
+  var CardDBSet = shtCardDB.getRange(6,1,1,32).getValues();
+  var MstrSet = shtCardDB.getRange(6,33,1,16).getValues();
+  var ColCard = 0;
+  var SetNum;
+  var CardID;
+  var CardQty;
+  var CardNum;
+  var CardName;
+  var CardRarity;
+  var CardListSet = CardList[0];
+  var CardInfo; 
     
-    // Update the Player Army List
-    // English File
-    rngArmyListEnCurrRoundPwrLvl.setValue(armyBldCurrRoundVal);
-    rngArmyListEnBonusPwrLvl.setValue(BalanceBonusVal);
-    // French File
-    rngArmyListFrCurrRoundPwrLvl.setValue(armyBldCurrRoundVal);
-    rngArmyListFrBonusPwrLvl.setValue(BalanceBonusVal);
-    
-    // Hide Points Columns (6-7-8, 11-12)
-    shtArmyListEn.hideColumns(6, 3);
-    shtArmyListEn.hideColumns(11, 2);    
-    shtArmyListFr.hideColumns(6, 3);
-    shtArmyListFr.hideColumns(11, 2);
+  // Updates the Set Name to return to Main Function
+  PackData[0][0] = CardListSet;
+  
+  // Find Set Column according to Set in Cardlist (CardList[0]) and get all card quantities (first card starts at row 8, row 7 = card 0)
+  for (var ColSet = 0; ColSet <= 31; ColSet++){   
+    if (CardListSet == CardDBSet[0][ColSet]){
+      ColCard = ColSet+1;
+      ColSet = 32;
+    }
   }
 
-  if(armyBldRating == 'Points'){
-    // Update the Army DB
-    rngArmyDBCurrRoundPoints.setValue(armyBldCurrRoundVal);
-    rngArmyDBAvailPoints.setValue(BalanceBonusVal);
-    
-    // Update the Player Army List
-    // English File
-    rngArmyListEnCurrRoundPoints.setValue(armyBldCurrRoundVal);
-    rngArmyListEnBonusPoints.setValue(BalanceBonusVal);
-    // French File
-    rngArmyListFrCurrRoundPoints.setValue(armyBldCurrRoundVal);
-    rngArmyListFrBonusPoints.setValue(BalanceBonusVal);
+  // Looks for French at CardList[15] and translates
+  if (CardList[15] == 'Oui') CardList[15] = 'Yes';
+  if (CardList[15] == 'Non') CardList[15] = 'No';
   
-    // Hide Power Level Columns (5, 9-10)
-    shtArmyListEn.hideColumns(5, 1);
-    shtArmyListEn.hideColumns(9, 2);    
-    shtArmyListFr.hideColumns(5, 1);
-    shtArmyListFr.hideColumns(9, 2);
+  // Loop through each card in CardList to find the appropriate column to find card (Masterpiece or not)
+  for (var CardListNb = 1; CardListNb <= 14; CardListNb++){
+    // Get Card ID Number 
+    CardID = CardList[CardListNb];
+    
+    // Regular cards and non Masterpiece card
+    if (CardListNb < 14 || (CardListNb == 14 && (CardList[15] == 'No'))){
+      ColCard = ColCard;
+    }
+    
+    // If Last card is a Masterpiece
+    if (CardListNb == 14 && CardList[15] == 'Yes'){
+      // Get Set Number to find Masterpiece Column
+      SetNum = shtCardDB.getRange(4, ColCard).getValue();
+      // Set Masterpiece Column according to Set Number
+      switch (SetNum){
+        case 1 : ColCard= 47; break;
+        case 2 : ColCard= 47; break;
+        case 3 : ColCard= 43; break;
+        case 4 : ColCard= 43; break;
+        case 5 : ColCard= 39; break;
+        case 6 : ColCard= 39; break;
+        case 7 : ColCard= 35; break;
+        case 8 : ColCard= 35; break;
+      }
+    }
+        
+    // Get Card Info (Quantity, Card Number, Card Name, Rarity) // [0][0]= Card in Pack, [0][1]= Card Number, [0][2]= Card Name, [0][3]= Card Rarity
+    CardInfo = shtCardDB.getRange(CardID+7, ColCard-2,1,4).getValues();
+    CardQty  = CardInfo[0][0];
+    CardNum  = CardInfo[0][1];
+    CardName = CardInfo[0][2];
+    CardRarity = CardInfo[0][3];
+    
+    // If Card Name exists, update card quantity and store Card Info to Pack Data
+    if (CardName != ''){
+      // Update Card Quantity in Card DB
+      shtCardDB.getRange(CardID+7, ColCard-2).setValue(CardQty + 1);
+
+      // Store Card Info to return to Main Function
+      PackData[CardListNb][0] = CardListNb;  // Card in Pack
+      PackData[CardListNb][1] = CardInfo[0][1]; // Card Number
+      PackData[CardListNb][2] = CardInfo[0][2]; // Card Name
+      PackData[CardListNb][3] = CardInfo[0][3]; // Card Rarity
+      
+      // If Last card is not a Masterpiece
+      if (CardListNb == 14 && CardList[15] == 'No') PackData[15][2] = 'No Masterpiece';
+      
+      // If Last card is a Masterpiece
+      if (CardListNb == 14 && CardList[15] == 'Yes') PackData[15][2] = 'Last Card is Masterpiece';
+            
+    }
+    
+    // If Card Name does not exist, set status to 0
+    if (CardName == ''){
+      PackData[CardListNb][1] = CardID; // Card Number
+      PackData[CardListNb][2] = 'Card Name not Found for Card Number';
+    }
+    //shtTest.getRange(CardListNb,3).setValue(UpdateCardDBStatus[CardListNb]);
   }
+
+  // Debug
+  //shtTest.getRange(1,1,16,4).setValues(PackData);
+  
+  // Call function to generate clean card list from Player Card DB
+  fcnUpdateCardList(shtConfig, shtCardDB, Player, shtTest);
+  
+  // Return Value
+  return PackData;
 }
 

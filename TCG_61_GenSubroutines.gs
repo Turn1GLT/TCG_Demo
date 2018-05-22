@@ -364,7 +364,7 @@ function subPlayerMatchValidation(ss, shtConfig, ParticipantName, MatchValidatio
   
   // Get Configuration Data
   var cfgEventData = shtConfig.getRange(4, 2,16,1).getValues();
-  var cfgColRndSht = shtConfig.getRange(4,21,16,1).getValues();
+  var cfgColRndSht = shtConfig.getRange(4,18,16,1).getValues();
   
   // Column Values for Rounds Sheets
   var colRndPlyr =     cfgColRndSht[ 0][0];
@@ -500,7 +500,7 @@ function subUpdateStatus(shtRspn, RspnRow, ColStatus, ColStatusMsg, StatusNum) {
 function subPlayerWithMost(shtConfig, PlayerMostData, NbPlayers, shtRound){
  
   
-  var cfgColRndSht = shtConfig.getRange(4,21,16,1).getValues();
+  var cfgColRndSht = shtConfig.getRange(4,18,16,1).getValues();
   
   // Column Values
   var colRndPlyr =     cfgColRndSht[ 0][0];
@@ -613,7 +613,7 @@ function subCrtMatchRepTeamList(shtConfig, shtTeams, cfgEvntParam){
 
   // Event Parameters
   var evntTeamNbPlyr = cfgEvntParam[10][0];
-  var evntTeamMatch = cfgEvntParam[11][0];
+  var evntTeamMatch =  cfgEvntParam[11][0];
   
   //  Number of Players and Teams
   var NbPlyr = shtConfig.getRange(13,2).getValue();
@@ -796,7 +796,7 @@ function subUpdatePlayerMember(shtConfig, shtPlayers, Member){
   
   //  Member[1] = Member Record File ID
   
-  var cfgRegFormCnstrVal = shtConfig.getRange(4,26,20,3).getValues();
+  var cfgRegFormCnstrVal = shtConfig.getRange(4,23,20,3).getValues();
   var colTblMemberFileID = cfgRegFormCnstrVal[17][2];
   var NbPlayers = shtPlayers.getRange(2,1).getValue();
   

@@ -18,11 +18,11 @@ function fcnProcessMatchTCG() {
   // Config Sheet to get options
   var shtConfig = ss.getSheetByName('Config');
   var cfgEvntParam =    shtConfig.getRange( 4, 4,48,1).getValues();
-  var cfgColRspSht =    shtConfig.getRange( 4,18,16,1).getValues();
-  var cfgColRndSht =    shtConfig.getRange( 4,21,16,1).getValues();
-  var cfgExecData  =    shtConfig.getRange( 4,24,16,1).getValues();
-  var cfgColMatchRep =  shtConfig.getRange( 4,31,20,1).getValues();
-  var cfgColMatchRslt = shtConfig.getRange(21,18,32,1).getValues();
+  var cfgColRspSht =    shtConfig.getRange( 4,15,16,1).getValues();
+  var cfgColRndSht =    shtConfig.getRange( 4,18,16,1).getValues();
+  var cfgExecData  =    shtConfig.getRange( 4,21,16,1).getValues();
+  var cfgColMatchRep =  shtConfig.getRange( 4,28,20,1).getValues();
+  var cfgColMatchRslt = shtConfig.getRange(21,15,32,1).getValues();
   
   // Execution Options
   var exeSendEmail =  cfgExecData[5][0];
@@ -56,7 +56,7 @@ function fcnProcessMatchTCG() {
   var evntRoundDuration = cfgEvntParam[13][0];
   
   // Get Sheet IDs
-  var shtIDs = shtConfig.getRange(4,7,20,1).getValues();
+  var shtIDs = shtConfig.getRange(4,7,24,1).getValues();
   
   // Get Log Sheet
   var shtLog = SpreadsheetApp.openById(shtIDs[1][0]).getSheetByName('Log');

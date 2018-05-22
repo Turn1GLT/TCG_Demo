@@ -16,18 +16,18 @@ function fcnCrtMatchReportForm_TCG() {
   var shtTeams =   ss.getSheetByName('Teams');
     
   // Configuration Data
-  var shtIDs = shtConfig.getRange(4,7,20,1).getValues();
-  var cfgEvntParam = shtConfig.getRange(4,4,48,1).getValues();
-  var cfgColRspSht = shtConfig.getRange(4,18,16,1).getValues();
-  var cfgColRndSht = shtConfig.getRange(4,21,16,1).getValues();
-  var cfgExecData  = shtConfig.getRange(4,24,16,1).getValues();
-  var cfgArmyBuild = shtConfig.getRange(4,33,20,1).getValues();
+  var shtIDs = shtConfig.getRange(4,7,24,1).getValues();
+  var cfgEvntParam =    shtConfig.getRange( 4, 4,48,1).getValues();
+  var cfgColRspSht =    shtConfig.getRange( 4,15,16,1).getValues();
+  var cfgColRndSht =    shtConfig.getRange( 4,18,16,1).getValues();
+  var cfgExecData  =    shtConfig.getRange( 4,21,16,1).getValues();
+  var cfgDeckBuild =    shtConfig.getRange( 4,30,20,1).getValues();
   
   // Registration Form Construction 
   // Column 1 = Category Name
   // Column 2 = Category Order in Form
   // Column 3 = Column Value in Player/Team Sheet
-  var cfgReportFormCnstrVal = shtConfig.getRange(4,30,20,2).getValues();
+  var cfgReportFormCnstrVal = shtConfig.getRange(4,27,20,2).getValues();
   
   // Execution Parameters
   var exeGnrtResp = cfgExecData[3][0];
@@ -53,16 +53,17 @@ function fcnCrtMatchReportForm_TCG() {
   // Log Sheet
   var shtLog = SpreadsheetApp.openById(shtIDs[1][0]).getSheetByName('Log');
 
-  // Registration ID from the Config File
-  var ssID =     shtIDs[0][0];
-  var FormIdEN = shtIDs[7][0];
-  var FormIdFR = shtIDs[8][0];
+  // Match Form ID from the Config File
+  var ssID =        shtIDs[0][0];
+  var FormIdEN =    shtIDs[11][0];
+  var FormIdFR =    shtIDs[12][0];
+  var folderImgID = shtIDs[23][0];
  
   // Row Column Values to Write Form IDs and URLs
-  var rowFormEN  = 11;
-  var rowFormFR  = 12;
+  var rowFormEN  = 15;
+  var rowFormFR  = 16;
   var colFormID  = 7;
-  var colFormURL = 11
+  var colFormURL = 8;
   
   var ssTexts = SpreadsheetApp.openById('1DkSr5HbGqZ_c38DlHKiBhgcBXw3fr3CK9zDE04187fE');
   var shtTxtReport = ssTexts.getSheetByName('Match Report TCG');
@@ -98,6 +99,14 @@ function fcnCrtMatchReportForm_TCG() {
   var Team1List;
   var Team2List;
   var TeamListLength;
+  
+  var SctPackOpenEN;
+  var SctPackOpenFR;
+  var CardValidation;
+  var ExpansionNum = shtConfig.getRange(3,31).getValue();
+  var ExpansionSet = shtConfig.getRange(4,34,ExpansionNum,1).getValues();
+  var ExpansionList = new Array(ExpansionNum);
+
   
   var shtResp1;
   var shtResp2;
@@ -144,7 +153,7 @@ function fcnCrtMatchReportForm_TCG() {
         ss.deleteSheet(shtResp2);
       }
       
-      // First Sheet After Responses is MatchResp EN
+      // First Sheet After Responses is MatchResp FR
       if(shtRespName1 == "MatchResp FR"){
         FormApp.openById(FormIdFR).removeDestination();
         ss.deleteSheet(shtResp1);
@@ -171,6 +180,7 @@ function fcnCrtMatchReportForm_TCG() {
   .setHelpText("Entrez un nombre entre " + evntMatchPtsMin + " et " + evntMatchPtsMax)
   .requireNumberBetween(evntMatchPtsMin, evntMatchPtsMax)
   .build();
+  
   
   // Create Forms
   if ((FormIdEN == "" && FormIdFR == "") || FormsDeleted == 1){
@@ -270,16 +280,16 @@ function fcnCrtMatchReportForm_TCG() {
               // English
               Player1List = formEN.addListItem()
               .setTitle("Winning Player")
-              .setHelpText("If Game is a Tie, select your name")
               .setRequired(true);
+              if(evntTiePossible == "Enabled") Player1List.setHelpText("If Game is a Tie, select your name");
               if (NbPlyr > 0) Player1List.setChoiceValues(PlayerList);
               
               // French
               Player1List = formFR.addListItem()
               .setTitle("Joueur Gagnant")
-              .setHelpText("Si la partie est nulle, sélectionnez votre nom")
               .setRequired(true);
-              if (NbPlyr > 0) Player1List.setChoiceValues(PlayerList);
+              if(evntTiePossible == "Enabled") Player1List.setHelpText("Si la partie est nulle, sélectionnez votre nom");
+              if(NbPlyr > 0) Player1List.setChoiceValues(PlayerList);
             }
             break;
           }
@@ -292,6 +302,7 @@ function fcnCrtMatchReportForm_TCG() {
               .setTitle("Player 2")
               .setHelpText("Select your opponent")
               .setRequired(true);
+              if(evntTiePossible == "Enabled") 
               if (NbPlyr > 0) Player2List.setChoiceValues(PlayerList); 
               
               // French
@@ -299,6 +310,7 @@ function fcnCrtMatchReportForm_TCG() {
               .setTitle("Joueur 2")
               .setHelpText("Sélectionnez votre adversaire")
               .setRequired(true);
+              if(evntTiePossible == "Enabled") 
               if (NbPlyr > 0) Player2List.setChoiceValues(PlayerList);
             }
             // If Points Gained in Match are not used
@@ -306,15 +318,15 @@ function fcnCrtMatchReportForm_TCG() {
               // English
               Player2List = formEN.addListItem()
               .setTitle("Losing Player")
-              .setHelpText("If Game is a Tie, select your opponent")
               .setRequired(true);
+              if(evntTiePossible == "Enabled")  Player2List.setHelpText("If Game is a Tie, select your opponent");
               if (NbPlyr > 0) Player2List.setChoiceValues(PlayerList); 
               
               // French
               Player2List = formFR.addListItem()
               .setTitle("Joueur Perdant")
-              .setHelpText("Si la partie est nulle, sélectionnez votre adversaire")
               .setRequired(true);
+              if(evntTiePossible == "Enabled")  Player2List.setHelpText("Si la partie est nulle, sélectionnez votre adversaire");
               if (NbPlyr > 0) Player2List.setChoiceValues(PlayerList);
             }
             break;
@@ -345,15 +357,15 @@ function fcnCrtMatchReportForm_TCG() {
               // English
               Team1List = formEN.addListItem()
               .setTitle("Winning Team")
-              .setHelpText("If Game is a Tie, select your team")
               .setRequired(true);
+              if(evntTiePossible == "Enabled") Team1List.setHelpText("If Game is a Tie, select your team");
               if (NbTeam > 0) Team1List.setChoiceValues(TeamList);
               
               // French
               Team1List = formFR.addListItem()
               .setTitle("Équipe Gagnante")
-              .setHelpText("Si la partie est nulle, sélectionnez votre équipe")
               .setRequired(true);
+              if(evntTiePossible == "Enabled") Team1List.setHelpText("Si la partie est nulle, sélectionnez votre équipe");
               if (NbTeam > 0) Team1List.setChoiceValues(TeamList);
             }
             break;
@@ -381,15 +393,15 @@ function fcnCrtMatchReportForm_TCG() {
               // English
               Team2List = formEN.addListItem()
               .setTitle("Losing Team")
-              .setHelpText("If Game is a Tie, select the opposing team")
               .setRequired(true);
+              if(evntTiePossible == "Enabled") Team2List.setHelpText("If Game is a Tie, select the opposing team");
               if (NbTeam > 0) Team2List.setChoiceValues(TeamList); 
               
               // French
               Team2List = formFR.addListItem()
               .setTitle("Équipe Perdante")
-              .setHelpText("Si la partie est nulle, sélectionnez l'équipe adverse")
               .setRequired(true);
+              if(evntTiePossible == "Enabled") Team2List.setHelpText("Si la partie est nulle, sélectionnez l'équipe adverse");
               if (NbTeam > 0) Team2List.setChoiceValues(TeamList);
             } 
             break;
@@ -474,6 +486,146 @@ function fcnCrtMatchReportForm_TCG() {
             .setChoiceValues(["Oui","Non"]);
             break;
           }
+       
+            //---------------------------------------------
+            // SCORE
+          case 'Score':{ 
+            // English
+            formEN.addMultipleChoiceItem()
+            .setTitle("Score")
+            .setRequired(true)
+            .setChoiceValues(["2-0","2-1"]);
+            
+            // French
+            formFR.addMultipleChoiceItem()
+            .setTitle("Score")
+            .setRequired(true)
+            .setChoiceValues(["2-0","2-1"]);
+            break;
+          }
+            
+            //---------------------------------------------
+            // PUNISHMENT PACK
+          case 'Punishment Pack':{ 
+            // English
+            formEN.addPageBreakItem().setTitle("Punishment Pack");
+            // Pack Opened?
+            SctPackOpenEN = formEN.addMultipleChoiceItem().setTitle("Did you open a Punishment Pack?");
+            SctPackOpenEN.setChoices([SctPackOpenEN.createChoice("Yes", FormApp.PageNavigationType.CONTINUE), 
+                                      SctPackOpenEN.createChoice("No", FormApp.PageNavigationType.SUBMIT)]);   
+            
+            // French
+            formFR.addPageBreakItem().setTitle("Pack de Punition");
+            // Pack Opened?
+            SctPackOpenFR = formFR.addMultipleChoiceItem().setTitle("Avez-vous ouvert un Pack de Punition?");
+            SctPackOpenFR.setChoices([SctPackOpenFR.createChoice("Oui", FormApp.PageNavigationType.CONTINUE), 
+                                      SctPackOpenFR.createChoice("Non", FormApp.PageNavigationType.SUBMIT)]);   
+            
+            //---------------------------------------------
+            // EXPANSION SET
+            // Transfers Expansion Set Double Array to Single Array
+            for(var i = 0; i < ExpansionNum; i++){
+              ExpansionList[i] = ExpansionSet[ExpansionNum-1 - i][0];
+            }
+            
+            // English
+            formEN.addPageBreakItem().setTitle("Expansion Set").setHelpText("Please select the expansion set of your punishment pack.");
+            formEN.addListItem()
+            .setTitle("Expansion Set")
+            .setRequired(true)
+            .setChoiceValues(ExpansionList);    
+            
+            // French
+            formFR.addPageBreakItem().setTitle("Set d'Expansion").setHelpText("SVP, sélectionnez le set d'expansion de votre Booster.");
+            formFR.addListItem()
+            .setTitle("Expansion Set")
+            .setRequired(true)
+            .setChoiceValues(ExpansionList);
+            
+            //---------------------------------------------
+            // CARD LIST
+            
+            // Card Number Validation
+            CardValidation = FormApp.createTextValidation()
+            .setHelpText("Enter a number between 1 and 300.")
+            .requireNumberBetween(1, 300)
+            .build();
+            
+            // English
+            formEN.addPageBreakItem()
+            .setTitle("Card List")
+            .setHelpText("Enter each card number of your pack. The Card Number is the first number in the lower left side corner (red).");
+            
+            
+            // CARD IMAGE
+            var folderImg = DriveApp.getFolderById(folderImgID);
+            var files = folderImg.getFiles();
+            
+            while (files.hasNext()) {
+              var file = files.next();
+              Logger.log(file.getName());
+              if(file.getName() == "Card.jpg") var imgCard = file.getBlob();
+              
+            }
+            
+            formEN.addImageItem()
+            .setImage(imgCard);
+            
+            // Loop to create first 13 cards of the pack
+            for(var card = 1; card<=13; card++){
+              formEN.addTextItem()
+              .setTitle("Card " + card)
+              .setRequired(true)
+              .setValidation(CardValidation);
+            }
+            
+            // Create last card to specify Masterpiece Number if applicable 
+            formEN.addTextItem()
+            .setTitle("Card 14 / Masterpiece")
+            .setHelpText("If you opened a Masterpiece, Please enter the card number here (Kaladesh Invention, Amonkhet Invocation)")
+            .setRequired(true)
+            .setValidation(CardValidation);
+            
+            // Create Masterpiece Selection
+            formEN.addMultipleChoiceItem()
+            .setTitle("Masterpiece")
+            .setHelpText("Did you open a Masterpiece Foil (Kaladesh Invention, Amonkhet Invocation)")
+            .setRequired(true)
+            .setChoiceValues(["Yes","No"]);    
+            
+            // French
+            formFR.addPageBreakItem()
+            .setTitle("Liste de Cartes")
+            .setHelpText("Entrez le numéro de chaque carte de votre paquet. Le numéro de carte est le premier numéro dans le coin inférieur gauche de la carte. (en rouge)");
+            
+            formFR.addImageItem()
+            .setImage(imgCard);
+            
+            // Loop to create first 13 cards of the pack
+            for(var card = 1; card<=13; card++){
+              formFR.addTextItem()
+              .setTitle("Carte " + card)
+              .setRequired(true)
+              .setValidation(CardValidation);
+            }
+            
+            // Create last card to specify Masterpiece Number if applicable 
+            formFR.addTextItem()
+            .setTitle("Carte 14 / Masterpiece")
+            .setHelpText("Si vous avez ouvert une Masterpiece, SVP, entrez son numéro ici (Kaladesh Invention, Amonkhet Invocation)")
+            .setRequired(true)
+            .setValidation(CardValidation);
+            
+            // Create Masterpiece Selection
+            formFR.addMultipleChoiceItem()
+            .setTitle("Masterpiece")
+            .setHelpText("Avez-vous ouvert une Masterpiece (Kaladesh Invention, Amonkhet Invocation)")
+            .setRequired(true)
+            .setChoiceValues(["Oui","Non"]);  
+            break;
+          }
+            
+            
           default : break;
         }
         // Increment to Next Question
@@ -590,7 +742,7 @@ function fcnSetupMatchResponseSht(){
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   // Configuration Sheet
   var shtConfig = ss.getSheetByName('Config');
-  var cfgColRspSht = shtConfig.getRange(4,18,16,1).getValues();
+  var cfgColRspSht = shtConfig.getRange(4,15,16,1).getValues();
   
   // Open Responses Sheets
   var shtNewRespEN = ss.getSheetByName('MatchResp EN');

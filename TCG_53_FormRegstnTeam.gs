@@ -16,18 +16,20 @@ function fcnCrtRegstnFormTeam_TCG() {
   var shtTeams =   ss.getSheetByName('Teams');
     
   // Configuration Data
-  var shtIDs = shtConfig.getRange(4,7,20,1).getValues();
-  var cfgEvntParam = shtConfig.getRange(4,4,48,1).getValues();
-  var cfgColRspSht = shtConfig.getRange(4,18,16,1).getValues();
-  var cfgColRndSht = shtConfig.getRange(4,21,16,1).getValues();
-  var cfgExecData  = shtConfig.getRange(4,24,16,1).getValues();
-  var cfgArmyBuild = shtConfig.getRange(4,33,20,1).getValues();
+  var shtIDs = shtConfig.getRange(4,7,24,1).getValues();
+  var cfgEvntParam =    shtConfig.getRange( 4, 4,48,1).getValues();
+  var cfgColRspSht =    shtConfig.getRange( 4,15,16,1).getValues();
+  var cfgColRndSht =    shtConfig.getRange( 4,18,16,1).getValues();
+  var cfgExecData  =    shtConfig.getRange( 4,21,16,1).getValues();
+  var cfgColMatchRep =  shtConfig.getRange( 4,28,20,1).getValues();
+  var cfgColMatchRslt = shtConfig.getRange(21,15,32,1).getValues();
+  var cfgArmyBuild =    shtConfig.getRange( 4,30,20,1).getValues();
   
   // Registration Form Construction 
   // Column 1 = Category Name
   // Column 2 = Category Order in Form
   // Column 3 = Column Value in Player/Team Sheet
-  var cfgRegFormCnstrVal = shtConfig.getRange(24,26,20,3).getValues();
+  var cfgRegFormCnstrVal = shtConfig.getRange(24,23,20,3).getValues();
   
   // Execution Parameters
   var exeGnrtResp = cfgExecData[3][0];
@@ -43,14 +45,14 @@ function fcnCrtRegstnFormTeam_TCG() {
   
   // Registration ID from the Config File
   var ssID = shtIDs[0][0];
-  var FormIdEN = shtIDs[11][0];
-  var FormIdFR = shtIDs[12][0];
+  var FormIdEN = shtIDs[15][0];
+  var FormIdFR = shtIDs[16][0];
  
   // Row Column Values to Write Form IDs and URLs
-  var rowFormEN  = 15;
-  var rowFormFR  = 16;
+  var rowFormEN  = 19;
+  var rowFormFR  = 20;
   var colFormID  = 7;
-  var colFormURL = 11
+  var colFormURL = 8;
   
   var ErrorVal = '';
   var QuestionOrder = 2;

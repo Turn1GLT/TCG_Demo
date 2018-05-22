@@ -12,11 +12,11 @@ function fcnUpdateStandings(){
   
   // Config Sheet to get options
   var shtConfig = ss.getSheetByName('Config');
-  var shtIDs = shtConfig.getRange(4,7,20,1).getValues();
-  var cfgEvntParam = shtConfig.getRange(4,4,48,1).getValues();
-  var cfgColRspSht = shtConfig.getRange(4,18,16,1).getValues();
-  var cfgColRndSht = shtConfig.getRange(4,21,16,1).getValues();
-  var cfgExecData  = shtConfig.getRange(4,24,16,1).getValues();
+  var shtIDs = shtConfig.getRange(4,7,24,1).getValues();
+  var cfgEvntParam = shtConfig.getRange( 4, 4,48,1).getValues();
+  var cfgColRspSht = shtConfig.getRange( 4,15,16,1).getValues();
+  var cfgColRndSht = shtConfig.getRange( 4,18,16,1).getValues();
+  var cfgExecData  = shtConfig.getRange( 4,21,16,1).getValues();
   
   Logger.log("Routine: fcnUpdateStandings");
   
@@ -142,7 +142,7 @@ function fcnCopyStandingsSheets(ss, shtConfig, cfgEvntParam, cfgColRndSht, RspnR
 //  
 //  // Config Sheet to get options
 //  var shtConfig = ss.getSheetByName('Config');
-//  var shtIDs = shtConfig.getRange(4,7,20,1).getValues();
+//  var shtIDs = shtConfig.getRange(4,7,24,1).getValues();
 //  var cfgEvntParam = shtConfig.getRange(4,4,48,1).getValues();
 //  var cfgColRspSht = shtConfig.getRange(4,18,16,1).getValues();
 //  var cfgColRndSht = shtConfig.getRange(4,21,16,1).getValues();
@@ -153,16 +153,16 @@ function fcnCopyStandingsSheets(ss, shtConfig, cfgEvntParam, cfgColRndSht, RspnR
   
   Logger.log("Routine: fcnCopyStandingsSheets");
 
-  var shtIDs = shtConfig.getRange(4, 7,20,1).getValues();
-  var shtUrl = shtConfig.getRange(4,11,20,1).getValues();
+  var shtIDs = shtConfig.getRange(4,7,24,1).getValues();
+  var shtUrl = shtConfig.getRange(4,8,24,1).getValues();
   
   // Open Player Standings Spreadsheet
   var ssStdngEN = SpreadsheetApp.openById(shtIDs[5][0]);
   var ssStdngFR = SpreadsheetApp.openById(shtIDs[6][0]);
   
   // Match Report Form URL
-  var FormUrlEN = shtUrl[7][0];
-  var FormUrlFR = shtUrl[8][0];
+  var FormUrlEN = shtUrl[11][0];
+  var FormUrlFR = shtUrl[12][0];
   
   // Event Parameters
   var evntNameEN = cfgEvntParam[0][0] + ' ' + cfgEvntParam[7][0];

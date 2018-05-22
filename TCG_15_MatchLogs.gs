@@ -23,8 +23,8 @@ function fcnLogEventMatch(ss, shtConfig, cfgEvntParam, logStatusPlyr, MatchData)
   var shtPlayers = ss.getSheetByName("Players");
   
   // Get Player Log Spreadsheet
-  var shtIDs = shtConfig.getRange(4,7,20,1).getValues();
-  var ssEvntPlyrRec = SpreadsheetApp.openById(shtIDs[13][0]);
+  var shtIDs = shtConfig.getRange(4,7,24,1).getValues();
+  var ssEvntPlyrRec = SpreadsheetApp.openById(shtIDs[9][0]);
   var shtEvntPlyrRec = ssEvntPlyrRec.getSheetByName(PlayerName);
   var rngRecord = "A4:I4";
   

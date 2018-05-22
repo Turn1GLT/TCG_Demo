@@ -28,12 +28,12 @@ function fcnModifyRoundMatchReport(ss, shtConfig){
   
   Logger.log("Routine: fcnModifyRoundMatchReport");
 
-  var shtIDs = shtConfig.getRange(4,7,20,1).getValues();
-  var MatchFormEN = FormApp.openById(shtIDs[7][0]);
+  var shtIDs = shtConfig.getRange(4,7,24,1).getValues();
+  var MatchFormEN = FormApp.openById(shtIDs[11][0]);
   var FormItemEN = MatchFormEN.getItems();
   var NbFormItem = FormItemEN.length;
   
-  var MatchFormFR = FormApp.openById(shtIDs[8][0]);
+  var MatchFormFR = FormApp.openById(shtIDs[12][0]);
   var FormItemFR = MatchFormFR.getItems();
   
   var Round = shtConfig.getRange(7,2).getValue();

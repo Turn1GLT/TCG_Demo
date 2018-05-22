@@ -11,21 +11,21 @@
 function fcnSendConfirmEmail(shtConfig, Address, MatchData) {
   
   // Configuration Parameters
-  var shtIDs = shtConfig.getRange(4,7,20,1).getValues();
-  var cfgUrl = shtConfig.getRange(4,11,20,1).getValues();
+  var shtIDs = shtConfig.getRange(4,7,24,1).getValues();
+  var cfgUrl = shtConfig.getRange(4,8,24,1).getValues();
   var cfgEvntParam = shtConfig.getRange(4,4,48,1).getValues();
   
   // Get Log Sheet
   var shtLog = SpreadsheetApp.openById(shtIDs[1][0]).getSheetByName('Log');
   
   // Facebook Page Link
-  var urlFacebook = shtConfig.getRange(15, 4).getValue();
+  var urlFacebook = shtConfig.getRange(4,12).getValue();
   
   // Event Properties
   var evntLocation = cfgEvntParam[0][0];
 
   // Open Email Templates
-  var ssEmailID = shtConfig.getRange(10,15).getValue();
+  var ssEmailID = shtConfig.getRange(10,12).getValue();
   var ssEmail = SpreadsheetApp.openById(ssEmailID);
   var shtEmailTemplates = ssEmail.getSheetByName("Email Templates");
 
@@ -38,7 +38,7 @@ function fcnSendConfirmEmail(shtConfig, Address, MatchData) {
   
   // Match Data Assignation
   var MatchID = MatchData[2][0];
-  var Round    = MatchData[3][0];
+  var Round   = MatchData[3][0];
   var Winr    = MatchData[4][0];
   var Losr    = MatchData[5][0];
 
@@ -53,7 +53,7 @@ function fcnSendConfirmEmail(shtConfig, Address, MatchData) {
     // Get Document URLs
     var urlLists = cfgUrl[3][0];
     var urlStandings = cfgUrl[5][0];
-    var urlMatchReporter = cfgUrl[7][0];
+    var urlMatchReporter = cfgUrl[11][0];
     
     // Table Header
     var Headers = shtEmailTemplates.getRange(3,6,7,1).getValues();
@@ -101,7 +101,7 @@ function fcnSendConfirmEmail(shtConfig, Address, MatchData) {
     // Get Document URLs
     var urlLists = cfgUrl[4][0];
     var urlStandings = cfgUrl[6][0];
-    var urlMatchReporter = cfgUrl[8][0];
+    var urlMatchReporter = cfgUrl[12][0];
     
     // Table Header
     var Headers = shtEmailTemplates.getRange(3,7,7,1).getValues();
@@ -185,21 +185,21 @@ function fcnSendConfirmEmail(shtConfig, Address, MatchData) {
 function fcnSendErrorEmail(shtConfig, Address, MatchData, MatchID, Status) {
   
   // Configuration Parameters
-  var shtIDs = shtConfig.getRange(4,7,20,1).getValues();
-  var cfgUrl = shtConfig.getRange(4,11,20,1).getValues();
+  var shtIDs = shtConfig.getRange(4,7,24,1).getValues();
+  var cfgUrl = shtConfig.getRange(4,8,24,1).getValues();
   var cfgEvntParam = shtConfig.getRange(4,4,48,1).getValues();
   
   // Get Log Sheet
   var shtLog = SpreadsheetApp.openById(shtIDs[1][0]).getSheetByName('Log');
   
   // Facebook Page Link
-  var urlFacebook = shtConfig.getRange(15, 4).getValue();
+  var urlFacebook = shtConfig.getRange(4,12).getValue();
   
   // Event Properties
   var evntLocation = cfgEvntParam[0][0];
 
   // Open Email Templates
-  var ssEmailID = shtConfig.getRange(10,15).getValue();
+  var ssEmailID = shtConfig.getRange(10,12).getValue();
   var ssEmail = SpreadsheetApp.openById(ssEmailID);
   var shtEmailTemplates = ssEmail.getSheetByName("Email Templates");
 
@@ -212,7 +212,7 @@ function fcnSendErrorEmail(shtConfig, Address, MatchData, MatchID, Status) {
   
   // Match Data Assignation
   var MatchID = MatchData[2][0];
-  var Round    = MatchData[3][0];
+  var Round   = MatchData[3][0];
   var Winr    = MatchData[4][0];
   var Losr    = MatchData[5][0];
 
@@ -228,7 +228,7 @@ function fcnSendErrorEmail(shtConfig, Address, MatchData, MatchID, Status) {
     // Get Document URLs
     var urlLists = cfgUrl[3][0];
     var urlStandings = cfgUrl[5][0];
-    var urlMatchReporter = cfgUrl[7][0];
+    var urlMatchReporter = cfgUrl[11][0];
     
     // Table Header
     var Headers = shtEmailTemplates.getRange(3,6,7,1).getValues();
@@ -311,7 +311,7 @@ function fcnSendErrorEmail(shtConfig, Address, MatchData, MatchID, Status) {
     // Get Document URLs
     var urlLists = cfgUrl[4][0];
     var urlStandings = cfgUrl[6][0];
-    var urlMatchReporter = cfgUrl[8][0];
+    var urlMatchReporter = cfgUrl[12][0];
     
     // Table Header
     var Headers = shtEmailTemplates.getRange(3,7,7,1).getValues();
@@ -499,7 +499,7 @@ function subMatchReportTable(EmailMessage, Headers, MatchData, Param){
 function fcnMatchReportPwdError(shtConfig, Address){
 
   // Configuration Parameters
-  var shtIDs = shtConfig.getRange(4,7,20,1).getValues();
+  var shtIDs = shtConfig.getRange(4,7,24,1).getValues();
   var cfgEvntParam = shtConfig.getRange(4,4,48,1).getValues();
   
   // Get Log Sheet
@@ -577,15 +577,15 @@ function fcnMatchReportPwdError(shtConfig, Address){
 function fcnSendNewPlayerConf(shtConfig, PlayerData){
 
   // Configuration Parameters
-  var shtIDs = shtConfig.getRange(4,7,20,1).getValues();
-  var cfgUrl = shtConfig.getRange(4,11,20,1).getValues();
+  var shtIDs = shtConfig.getRange(4,7,24,1).getValues();
+  var cfgUrl = shtConfig.getRange(4,8,24,1).getValues();
   var cfgEvntParam = shtConfig.getRange(4,4,48,1).getValues();
   
   // Get Log Sheet
   var shtLog = SpreadsheetApp.openById(shtIDs[1][0]).getSheetByName('Log');
   
   // Facebook Page Link
-  var urlFacebook = shtConfig.getRange(15, 4).getValue();
+  var urlFacebook = shtConfig.getRange(4,12).getValue();
   
   // Event Properties
   var evntLocation = cfgEvntParam[0][0];
@@ -604,7 +604,7 @@ function fcnSendNewPlayerConf(shtConfig, PlayerData){
     // Get Document URLs
     var urlLists = cfgUrl[3][0];
     var urlStandings = cfgUrl[5][0];
-    var urlMatchReporter = cfgUrl[7][0];
+    var urlMatchReporter = cfgUrl[11][0];
     
     // Event Name
     var evntName = cfgEvntParam[7][0];
@@ -651,7 +651,7 @@ function fcnSendNewPlayerConf(shtConfig, PlayerData){
     // Get Document URLs
     var urlLists = cfgUrl[4][0];
     var urlStandings = cfgUrl[6][0];
-    var urlMatchReporter = cfgUrl[8][0];
+    var urlMatchReporter = cfgUrl[12][0];
     
     // Event Name
     var evntName = cfgEvntParam[8][0];
@@ -714,15 +714,15 @@ function fcnSendNewPlayerConf(shtConfig, PlayerData){
 function fcnSendNewPlayerConfOrgnzr(shtConfig, PlayerData){
   
   // Configuration Parameters
-  var shtIDs = shtConfig.getRange(4,7,20,1).getValues();
-  var cfgUrl = shtConfig.getRange(4,11,20,1).getValues();
+  var shtIDs = shtConfig.getRange(4,7,24,1).getValues();
+  var cfgUrl = shtConfig.getRange(4,8,24,1).getValues();
   var cfgEvntParam = shtConfig.getRange(4,4,48,1).getValues();
   
   // Get Log Sheet
   var shtLog = SpreadsheetApp.openById(shtIDs[1][0]).getSheetByName('Log');
   
   // Facebook Page Link
-  var urlFacebook = shtConfig.getRange(15, 4).getValue();
+  var urlFacebook = shtConfig.getRange(4,12).getValue();
   
   // Event Properties
   var evntLocation = cfgEvntParam[0][0];
@@ -741,7 +741,7 @@ function fcnSendNewPlayerConfOrgnzr(shtConfig, PlayerData){
     // Get Document URLs
     var urlLists = cfgUrl[3][0];
     var urlStandings = cfgUrl[5][0];
-    var urlMatchReporter = cfgUrl[7][0];
+    var urlMatchReporter = cfgUrl[11][0];
     
     // Event Name
     var evntName = cfgEvntParam[7][0];
@@ -788,7 +788,7 @@ function fcnSendNewPlayerConfOrgnzr(shtConfig, PlayerData){
     // Get Document URLs
     var urlLists = cfgUrl[4][0];
     var urlStandings = cfgUrl[6][0];
-    var urlMatchReporter = cfgUrl[8][0];
+    var urlMatchReporter = cfgUrl[12][0];
     
     // Event Name
     var evntName = cfgEvntParam[8][0];
@@ -1028,21 +1028,21 @@ function fcnGenRoundReportMsg(ss, shtConfig, EmailData, RoundStats, RoundPrizeDa
 function fcnSendBstrCnfrmEmail(Player, Round, EmailAddresses, PackData, shtConfig) {
   
   // Configuration Parameters
-  var shtIDs = shtConfig.getRange(4,7,20,1).getValues();
-  var cfgUrl = shtConfig.getRange(4,11,20,1).getValues();
+  var shtIDs = shtConfig.getRange(4,7,24,1).getValues();
+  var cfgUrl = shtConfig.getRange(4,8,24,1).getValues();
   var cfgEvntParam = shtConfig.getRange(4,4,48,1).getValues();
   
   // Get Log Sheet
   var shtLog = SpreadsheetApp.openById(shtIDs[1][0]).getSheetByName('Log');
   
   // Facebook Page Link
-  var urlFacebook = shtConfig.getRange(15, 4).getValue();
+  var urlFacebook = shtConfig.getRange(4,12).getValue();
   
   // Event Properties
   var evntLocation = cfgEvntParam[0][0];
 
   // Open Email Templates
-  var ssEmailID = shtConfig.getRange(10,15).getValue();
+  var ssEmailID = shtConfig.getRange(10,12).getValue();
   var ssEmail = SpreadsheetApp.openById(ssEmailID);
   var shtEmailTemplates = ssEmail.getSheetByName("Email Templates");
   
@@ -1064,7 +1064,7 @@ function fcnSendBstrCnfrmEmail(Player, Round, EmailAddresses, PackData, shtConfi
     // Get Document URLs
     var urlLists = cfgUrl[3][0];
     var urlStandings = cfgUrl[5][0];
-    var urlMatchReporter = cfgUrl[7][0];
+    var urlMatchReporter = cfgUrl[11][0];
     
     // Table Header
     var Headers = shtEmailTemplates.getRange(3,6,7,1).getValues();
@@ -1109,7 +1109,7 @@ function fcnSendBstrCnfrmEmail(Player, Round, EmailAddresses, PackData, shtConfi
     // Get Document URLs
     var urlLists = cfgUrl[4][0];
     var urlStandings = cfgUrl[6][0];
-    var urlMatchReporter = cfgUrl[8][0];
+    var urlMatchReporter = cfgUrl[12][0];
     
     // Table Header
     var Headers = shtEmailTemplates.getRange(3,7,7,1).getValues();
@@ -1163,21 +1163,21 @@ function fcnSendBstrCnfrmEmail(Player, Round, EmailAddresses, PackData, shtConfi
 function fcnSendBstrErrorEmail(Player, Round, EmailAddresses, PackData, ErrorMsg, shtConfig) {
   
   // Configuration Parameters
-  var shtIDs = shtConfig.getRange(4,7,20,1).getValues();
-  var cfgUrl = shtConfig.getRange(4,11,20,1).getValues();
+  var shtIDs = shtConfig.getRange(4,7,24,1).getValues();
+  var cfgUrl = shtConfig.getRange(4,8,24,1).getValues();
   var cfgEvntParam = shtConfig.getRange(4,4,48,1).getValues();
   
   // Get Log Sheet
   var shtLog = SpreadsheetApp.openById(shtIDs[1][0]).getSheetByName('Log');
   
   // Facebook Page Link
-  var urlFacebook = shtConfig.getRange(15, 4).getValue();
+  var urlFacebook = shtConfig.getRange(4,12).getValue();
   
   // Event Properties
   var evntLocation = cfgEvntParam[0][0];
 
   // Open Email Templates
-  var ssEmailID = shtConfig.getRange(10,15).getValue();
+  var ssEmailID = shtConfig.getRange(10,12).getValue();
   var ssEmail = SpreadsheetApp.openById(ssEmailID);
   var shtEmailTemplates = ssEmail.getSheetByName("Email Templates");
   
@@ -1195,8 +1195,8 @@ function fcnSendBstrErrorEmail(Player, Round, EmailAddresses, PackData, ErrorMsg
     // Get Document URLs
     var urlLists = cfgUrl[3][0];
     var urlStandings = cfgUrl[5][0];
-    var urlMatchReporter = cfgUrl[7][0];
-    var urlEscltBonusForm = cfgUrl[11][0];
+    var urlMatchReporter = cfgUrl[11][0];
+    var urlEscltBonusForm = cfgUrl[17][0];
     
     // Table Header
     var Headers = shtEmailTemplates.getRange(3,6,7,1).getValues();
@@ -1242,8 +1242,8 @@ function fcnSendBstrErrorEmail(Player, Round, EmailAddresses, PackData, ErrorMsg
     // Get Document URLs
     var urlLists = cfgUrl[4][0];
     var urlStandings = cfgUrl[6][0];
-    var urlMatchReporter = cfgUrl[8][0];
-    var urlEscltBonusForm = cfgUrl[12][0];
+    var urlMatchReporter = cfgUrl[12][0];
+    var urlEscltBonusForm = cfgUrl[18][0];
     
     // Table Header
     var Headers = shtEmailTemplates.getRange(3,7,7,1).getValues();

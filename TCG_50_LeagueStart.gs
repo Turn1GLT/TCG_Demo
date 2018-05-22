@@ -110,15 +110,15 @@ function fcnInitializeEvent(){
   if(uiResponse == "OK"){
 //  if(cfgEventType == "League" || cfgEventType == "Tournament"){
     // Config Sheet to get options
-    var shtIDs = shtConfig.getRange(4,7,20,1).getValues();
-    var cfgColRspSht = shtConfig.getRange(4,18,16,1).getValues();
-    var cfgColRndSht = shtConfig.getRange(4,21,16,1).getValues();
+    var shtIDs = shtConfig.getRange(4,7,24,1).getValues();
+    var cfgColRspSht = shtConfig.getRange(4,15,16,1).getValues();
+    var cfgColRndSht = shtConfig.getRange(4,18,16,1).getValues();
     var cfgEvntParam = shtConfig.getRange(4,4,48,1).getValues();
     // Registration Form Construction 
     // Column 1 = Category Name
     // Column 2 = Category Order in Form
     // Column 3 = Column Value in Player/Team Sheet
-    var cfgRegFormCnstrVal = shtConfig.getRange(4,26,20,3).getValues();
+    var cfgRegFormCnstrVal = shtConfig.getRange(4,23,20,3).getValues();
     
     // Event Parameters
     var evntLocation = cfgEvntParam[0][0];
@@ -147,7 +147,7 @@ function fcnInitializeEvent(){
     var shtMatchRespEN = ss.getSheetByName('MatchResp EN');
     var shtMatchRespFR = ss.getSheetByName('MatchResp FR');
     var shtPlayers =     ss.getSheetByName('Players');
-    var ssExtPlayers = SpreadsheetApp.openById(shtIDs[14][0]); // External Player List Spreadsheet
+    var ssExtPlayers = SpreadsheetApp.openById(shtIDs[10][0]); // External Player List Spreadsheet
     var shtExtPlayers = ssExtPlayers.getSheetByName('Players');// External Player List Sheet
     
     // Max Rows / Columns
@@ -206,8 +206,8 @@ function fcnInitializeEvent(){
     Logger.log('Standings Updated');
     
     // Clear Players DB and Card Pools
-    fcnDelPlayerArmyDB();
-    fcnDelPlayerArmyList();
+    fcnDelPlayerCardDB();
+    fcnDelPlayerCardList();
     fcnDelEventRecord();
     Logger.log('Army DB and Army Lists Cleared');
         
@@ -244,9 +244,9 @@ function fcnClearMatchResults(){
   if(uiResponse == "OK"){
     
     // Config Sheet to get options
-    var shtIDs = shtConfig.getRange(4,7,20,1).getValues();
-    var cfgColRspSht = shtConfig.getRange(4,18,16,1).getValues();
-    var cfgColRndSht = shtConfig.getRange(4,21,16,1).getValues();
+    var shtIDs = shtConfig.getRange(4,7,24,1).getValues();
+    var cfgColRspSht = shtConfig.getRange(4,15,16,1).getValues();
+    var cfgColRndSht = shtConfig.getRange(4,18,16,1).getValues();
     var cfgEvntParam = shtConfig.getRange(4,4,48,1).getValues();
     
     // Columns from Config File
@@ -324,13 +324,13 @@ function fcnCrtEvntRecord(){
   
   // Config Spreadsheet
   var shtConfig = ss.getSheetByName('Config');
-  var shtIDs = shtConfig.getRange(4,7,20,1).getValues();
+  var shtIDs = shtConfig.getRange(4,7,24,1).getValues();
   var cfgEvntParam =  shtConfig.getRange( 4, 4,48,1).getValues();
-  var cfgColShtPlyr = shtConfig.getRange( 4,28,30,1).getValues();
-  var cfgColShtTeam = shtConfig.getRange(24,28,30,1).getValues();
+  var cfgColShtPlyr = shtConfig.getRange( 4,25,30,1).getValues();
+  var cfgColShtTeam = shtConfig.getRange(24,25,30,1).getValues();
   
   // Event Log Spreadsheet
-  var ssEventRecord = SpreadsheetApp.openById(shtIDs[13][0]);
+  var ssEventRecord = SpreadsheetApp.openById(shtIDs[9][0]);
   var shtTemplate = ssEventRecord.getSheetByName('Template');
   var shtArmyListNum;
   
@@ -467,10 +467,10 @@ function fcnDelEventRecord(){
   var shtConfig = ss.getSheetByName('Config');
   
   // Sheet IDs
-  var shtIDs = shtConfig.getRange(4,7,20,1).getValues();
+  var shtIDs = shtConfig.getRange(4,7,24,1).getValues();
   
   // Template Sheet
-  var ssDel = SpreadsheetApp.openById(shtIDs[13][0]);
+  var ssDel = SpreadsheetApp.openById(shtIDs[9][0]);
   var shtTemplate = ssDel.getSheetByName('Template').showSheet();
   
   // Delete Event Records
@@ -496,8 +496,8 @@ function fcnClrEvntRecord(){
   var shtConfig = ss.getSheetByName('Config');
   
   // Get Player Log Spreadsheet
-  var shtIDs = shtConfig.getRange(4,7,20,1).getValues();
-  var ssEvntPlyrRec = SpreadsheetApp.openById(shtIDs[13][0]);
+  var shtIDs = shtConfig.getRange(4,7,24,1).getValues();
+  var ssEvntPlyrRec = SpreadsheetApp.openById(shtIDs[9][0]);
   var rngRecord = "A4:I4";
   var evntPlyrRecNbSheets = ssEvntPlyrRec.getNumSheets();
   var evntPlyrSheets = ssEvntPlyrRec.getSheets();
@@ -536,38 +536,33 @@ function fcnClrEvntRecord(){
 //
 // **********************************************
 
-function fcnCrtPlayerArmyDB(){
+function fcnCrtPlayerCardDB(){
   
-  Logger.log("Routine: fcnCrtPlayerArmyDB");
+  Logger.log("Routine: fcnCrtPlayerCardDB");
   
   // Main Spreadsheet
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   
   // Config Spreadsheet
   var shtConfig = ss.getSheetByName('Config');
-  var shtIDs = shtConfig.getRange(4,7,20,1).getValues();
+  var shtIDs = shtConfig.getRange(4,7,24,1).getValues();
   
   // Configuration Data
-  var cfgArmyBuild = shtConfig.getRange(4,33,20,1).getValues();
-  var cfgColShtPlyr = shtConfig.getRange(4,28,20,1).getValues();
+  var cfgDeckBuild =  shtConfig.getRange(4,30,20,1).getValues();
+  var cfgColShtPlyr = shtConfig.getRange(4,25,20,1).getValues();
   
   // Column Values
   var colShtPlyrName =     cfgColShtPlyr[ 2][0];
   var colShtPlyrTeam =     cfgColShtPlyr[ 5][0];
-  var colShtPlyrArmy =     cfgColShtPlyr[10][0];
-  var colShtPlyrFaction1 = cfgColShtPlyr[11][0];
-  var colShtPlyrFaction2 = cfgColShtPlyr[12][0];
-  var colShtPlyrWarlord =  cfgColShtPlyr[13][0];
   
   // Current Army Values (Power Level or Points
-  var armyBldRatingMode = cfgArmyBuild[0][0];
-  var armyBldArmyValue = cfgArmyBuild[1][0];
+  var armyBldDeckValue = cfgDeckBuild[1][0];
   
-  // Army DB Spreadsheet
-  var ssArmyDB = SpreadsheetApp.openById(shtIDs[2][0]);
+  // Card DB Spreadsheet
+  var ssCardDB = SpreadsheetApp.openById(shtIDs[2][0]);
   var shtTemplate = ssArmyDB.getSheetByName('Template');
-  var NbSheet = ssArmyDB.getNumSheets();
-  var ssSheets = ssArmyDB.getSheets();
+  var NbSheet = ssCardDB.getNumSheets();
+  var ssSheets = ssCardDB.getSheets();
   var SheetName;
   var PlayerFound = 0;
 
@@ -603,14 +598,14 @@ function fcnCrtPlayerArmyDB(){
     // If Player is not found, create a tab with the player's name
     if(PlayerFound == 0){
       // Get the Template sheet index
-      NbSheet = ssArmyDB.getNumSheets();
+      NbSheet = ssCardDB.getNumSheets();
       // Inserts Sheet before Template (Last Sheet in Spreadsheet)
-      ssArmyDB.insertSheet(PlyrName, NbSheet-1, {template: shtTemplate});
-      shtPlyr = ssArmyDB.getSheetByName(PlyrName);
+      ssCardDB.insertSheet(PlyrName, NbSheet-1, {template: shtTemplate});
+      shtPlyr = ssCardDB.getSheetByName(PlyrName);
       
       // Updates the number of sheets
-      NbSheet = ssArmyDB.getNumSheets();
-      ssSheets = ssArmyDB.getSheets();
+      NbSheet = ssCardDB.getNumSheets();
+      ssSheets = ssCardDB.getSheets();
       
       // Get the Player Data
       PlyrArmy =     PlayerData[plyr][colShtPlyrArmy-ArmyDefOffset];
@@ -624,10 +619,7 @@ function fcnCrtPlayerArmyDB(){
       if(PlyrFaction2 == '') shtPlyr.getRange(5,3).setValue(PlyrFaction1);
       if(PlyrFaction2 != '') shtPlyr.getRange(5,3).setValue(PlyrFaction1 + ', ' + PlyrFaction2);
       shtPlyr.getRange(6,3).setValue(PlyrWarlord);
-      //
-      if (armyBldRatingMode == 'Power Level') shtPlyr.getRange(5,9).setValue(armyBldArmyValue);
-      if (armyBldRatingMode == 'Points')      shtPlyr.getRange(5,11).setValue(armyBldArmyValue);
-      
+
       // Hides the unused columns according to the Army Value (Power Level or Points)
       if (armyBldRatingMode == 'Power Level') {
         shtPlyr.hideColumns( 6, 3);
@@ -639,8 +631,8 @@ function fcnCrtPlayerArmyDB(){
       }
     }
   }
-  shtPlyr = ssArmyDB.getSheets()[0];
-  ssArmyDB.setActiveSheet(shtPlyr);
+  shtPlyr = ssCardDB.getSheets()[0];
+  ssCardDB.setActiveSheet(shtPlyr);
 }
 
 
@@ -661,11 +653,11 @@ function fcnCrtPlayerArmyList(){
   
   // Config Spreadsheet
   var shtConfig = ss.getSheetByName('Config');
-  var shtIDs = shtConfig.getRange(4,7,20,1).getValues();
+  var shtIDs = shtConfig.getRange(4,7,24,1).getValues();
   
   // Configuration Data
-  var cfgArmyBuild = shtConfig.getRange(4,33,20,1).getValues();
-  var cfgColShtPlyr = shtConfig.getRange(4,28,30,1).getValues();
+  var cfgArmyBuild = shtConfig.getRange(4,30,20,1).getValues();
+  var cfgColShtPlyr = shtConfig.getRange(4,25,30,1).getValues();
   
   // Column Values
   var colShtPlyrName = cfgColShtPlyr[2][0];
@@ -775,7 +767,7 @@ function fcnCopyArmyDBtoArmyList(shtConfig,PlyrName){
   Logger.log("Routine: fcnCopyArmyDBtoArmyList");
 
   // Sheet IDs
-  var shtIDs = shtConfig.getRange(4,7,20,1).getValues();
+  var shtIDs = shtConfig.getRange(4,7,24,1).getValues();
   
   // Army DB Spreadsheet
   var ssArmyDB = SpreadsheetApp.openById(shtIDs[2][0]); 
@@ -858,7 +850,7 @@ function fcnDelPlayerArmyDB(){
   var shtConfig = ss.getSheetByName('Config');
   
   // Sheet IDs
-  var shtIDs = shtConfig.getRange(4,7,20,1).getValues();
+  var shtIDs = shtConfig.getRange(4,7,24,1).getValues();
    
   // Template Sheet
   var ssDel = SpreadsheetApp.openById(shtIDs[2][0]);
@@ -888,7 +880,7 @@ function fcnDelPlayerArmyList(){
   var shtConfig = ss.getSheetByName('Config');
   
   // Sheet IDs
-  var shtIDs = shtConfig.getRange(4,7,20,1).getValues();
+  var shtIDs = shtConfig.getRange(4,7,24,1).getValues();
   
   // Template Sheet
   var ssDel = SpreadsheetApp.openById(shtIDs[3][0]);

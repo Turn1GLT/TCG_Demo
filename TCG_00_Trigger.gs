@@ -123,12 +123,12 @@ function onRoundChangeTCG_DemoMtG(){
   var shtConfig = ss.getSheetByName('Config');
   
   // Configuration Parameters
-  var shtIDs = shtConfig.getRange(4,7,20,1).getValues();
+  var shtIDs = shtConfig.getRange(4,7,24,1).getValues();
   var cfgUrl = shtConfig.getRange(4,11,20,1).getValues();
   var cfgEvntParam = shtConfig.getRange(4,4,48,1).getValues();
-  var cfgColRspSht = shtConfig.getRange(4,18,16,1).getValues();
-  var cfgColRndSht = shtConfig.getRange(4,21,16,1).getValues();
-  var cfgExecData  = shtConfig.getRange(4,24,16,1).getValues();
+  var cfgColRspSht = shtConfig.getRange(4,15,16,1).getValues();
+  var cfgColRndSht = shtConfig.getRange(4,18,16,1).getValues();
+  var cfgExecData  = shtConfig.getRange(4,21,16,1).getValues();
 
   // Get Log Sheet
   var shtLog = SpreadsheetApp.openById(shtIDs[1][0]).getSheetByName('Log');
@@ -185,7 +185,7 @@ function onRoundChangeTCG_DemoMtG(){
   fcnGenerateRoundReport();
   
   // RoundPrize Data
-  var RoundPrizeData = shtConfig.getRange(4,39,10,4).getValues();
+  var RoundPrizeData = shtConfig.getRange(4,36,10,4).getValues();
   
   // [x][1]= Prize Category 1 				[x][2]= Prize Category 2				[x][3]= Prize Category 3					
   // [0][1]= Round Prize                    [0][2]= Round Prize                    [0][3]= Round Prize

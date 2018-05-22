@@ -203,7 +203,7 @@ function fcnCreateGlobalPlayerRecord(){
   
   // Config Spreadsheet
   var shtConfig = ss.getSheetByName('Config');
-  var shtIDs = shtConfig.getRange(4,7,20,1).getValues();
+  var shtIDs = shtConfig.getRange(4,7,24,1).getValues();
   var cfgColShtPlyr = shtConfig.getRange(4,28,30,1).getValues();
   
   // Player Log Spreadsheet
@@ -305,7 +305,7 @@ function testFunctionCall(){
   
   // Config Sheet to get options
   var shtConfig = ss.getSheetByName('Config');
-  var shtIDs = shtConfig.getRange(4,7,20,1).getValues();
+  var shtIDs = shtConfig.getRange(4,7,24,1).getValues();
   var cfgEvntParam = shtConfig.getRange(4,4,48,1).getValues();
   var cfgColRspSht = shtConfig.getRange(4,18,16,1).getValues();
   var cfgColRndSht = shtConfig.getRange(4,21,16,1).getValues();
@@ -323,7 +323,7 @@ function fcnTestEmail(){
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   // Config Sheet to get options
   var shtConfig = ss.getSheetByName('Config');
-  var shtIDs = shtConfig.getRange(4,7,20,1).getValues();
+  var shtIDs = shtConfig.getRange(4,7,24,1).getValues();
   
   // Get Log Sheet
   var shtLog = SpreadsheetApp.openById(shtIDs[1][0]).getSheetByName('Log');
