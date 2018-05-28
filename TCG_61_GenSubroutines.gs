@@ -68,6 +68,7 @@ function subDelPlayerSheets(shtID){
   // Routine Variables
   var shtCurr;
   var shtCurrName;
+  var shtNextName;
   
   // Activates Template Sheet
   ssDel.setActiveSheet(shtTemplate);
@@ -76,8 +77,11 @@ function subDelPlayerSheets(shtID){
   for (var sht = 0; sht < NbSheet - 1; sht ++){
     // Get Sheet Name
     shtCurrName = sheets[0].getSheetName();
-    // If First Sheet is Template
-    if(shtCurrName != 'Template') {
+    shtNextName = sheets[1].getSheetName();
+    Logger.log(shtCurrName);
+    
+    // If First Sheet is Not Template
+    if(shtCurrName != 'Template' && shtCurrName != 'Transfer') {
       // Delete Sheet
       ssDel.deleteSheet(sheets[0]);
       // Update Sheets
@@ -85,8 +89,8 @@ function subDelPlayerSheets(shtID){
       NbSheet--;
       sht--;
     }
-    // If First Sheet is Not Template
-    if(shtCurrName == 'Template' && NbSheet > 1) {
+    // If First Sheet is Template
+    if(shtCurrName == 'Template' && shtNextName != 'Transfer' && NbSheet > 1) {
       // Delete Sheet
       ssDel.deleteSheet(sheets[1]);
       // Update Sheets
@@ -566,7 +570,7 @@ function subPlayerWithMost(shtConfig, PlayerMostData, NbPlayers, shtRound){
 
 
 // **********************************************
-// function subCrtMatchRepPlyrList()
+// function subCrtMatchRepComptrList()
 //
 // This function creates the Player List for
 // the Match Report Form 

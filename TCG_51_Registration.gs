@@ -40,7 +40,7 @@ function fcnRegistrationPlyrTCG(shtResponse, RowResponse){
   
   // Event Parameters
   var evntEscalation =  cfgEvntParam[19][0];
-  var evntLogCardList = cfgEvntParam[41][0];
+  var evntLogCardList = cfgEvntParam[44][0];
   
   // Match Report Form IDs
   var MatchFormIdEN = shtIDs[11][0];
@@ -141,9 +141,9 @@ function fcnRegistrationPlyrTCG(shtResponse, RowResponse){
     // fcnSendNewPlayerConfOrgnzr(shtConfig, PlayerData)
     
     // Copy Main File Players List to Store Players List
-    var rngPlayers = shtPlayers.getRange(3,2,shtPlayersMaxRow-2,shtPlayersMaxCol-1);
-    var rngStrPlayers = shtStrPlayers.getRange(3,2,shtPlayersMaxRow-2,shtPlayersMaxCol-1);
-    rngPlayers.copyTo(rngStrPlayers);
+    var MainPlayers = shtPlayers.getRange(3,2,shtPlayersMaxRow-2,shtPlayersMaxCol-1).getValues();
+    shtStrPlayers.getRange(3,2,shtPlayersMaxRow-2,shtPlayersMaxCol-1).setValues(MainPlayers);
+    //rngPlayers.copyTo(rngStrPlayers);
     
   }
 
@@ -238,6 +238,9 @@ function fcnAddPlayerTCG(shtIDs, shtConfig, shtPlayers, RegRspnVal, cfgEvntParam
   
   // Player Phone Number
   if(colRspPhone != "") PlyrPhone = RegRspnVal[0][colRspPhone-1];
+
+  // Player DCI
+  if(colRspDCI != "") PlyrDCI = RegRspnVal[0][colRspDCI-1];
   
   // Team Name
   if(colRspTeamName != "") PlyrTeamName = RegRspnVal[0][colRspTeamName-1];
@@ -281,7 +284,7 @@ function fcnAddPlayerTCG(shtIDs, shtConfig, shtPlayers, RegRspnVal, cfgEvntParam
     // DCI Number
     if(PlyrDCI != ""){
       shtPlayers.getRange(NextPlayerRow, colTblDCI).setValue(PlyrDCI);
-      Logger.log("Phone: %s",PlyrDCI); 
+      Logger.log("Player DCI: %s",PlyrDCI); 
     }
     Logger.log("-----------------------------");
 	
@@ -399,8 +402,7 @@ function fcnRegistrationTeamTCG(shtResponse, RowResponse){
   
   // Event Parameters
   var evntEscalation =  cfgEvntParam[19][0];
-  var evntLogArmyDef =  cfgEvntParam[46][0];
-  var evntLogArmyList = cfgEvntParam[47][0];
+  var evntLogCardList = cfgEvntParam[44][0];
   
   // Match Report Form IDs
   var MatchFormIdEN = shtIDs[11][0];

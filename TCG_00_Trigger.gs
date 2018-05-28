@@ -62,8 +62,8 @@ function onOpenTCG_DemoMtG() {
   // Event Parameters
   var evntFormat =      cfgEvntParam[ 9][0];
   var evntEscalation =  cfgEvntParam[19][0];
-  var evntLogArmyDef =  cfgEvntParam[46][0];
-  var evntLogArmyList = cfgEvntParam[47][0];
+  var evntLogCardList = cfgEvntParam[44][0];
+  var evntLogDeckList = cfgEvntParam[45][0];
     
   var AnalyzeDataMenu  = [];
   AnalyzeDataMenu.push({name: "Analyze New Match Entry", functionName: "fcnProcessMatchTCG"});
@@ -80,20 +80,20 @@ function onOpenTCG_DemoMtG() {
   if(evntFormat == "Team" || evntFormat == "Team+Players")   EventMenu.push({name:"Create Team Registration Forms", functionName:"fcnCrtRegstnFormTeam_TCG"});
   if(evntEscalation == "Enabled") EventMenu.push({name:"Create Escalation Bonus Forms", functionName:"fcnCrtEscltForm_TCG"});
   EventMenu.push(null);
-  // If Army Lists are used
-  if(evntLogArmyDef == "Enabled" || evntLogArmyList == "Enabled"){
+  // If Deck Lists are used
+  if(evntLogCardList == "Enabled" || evntLogDeckList == "Enabled"){
     EventMenu.push({name:"Create Players Card DBs", functionName:"fcnCrtPlayerCardDB"});
     EventMenu.push({name:"Create Players Card Lists", functionName:"fcnCrtPlayerCardList"});
   }
   EventMenu.push({name:"Create Players/Teams Records", functionName:"fcnCrtEvntRecord"});
   if(evntEscalation == "Enabled") EventMenu.push({name:"Create Players Escalation Bonus Sheets", functionName:"fcnCrtPlayerEscltBonus"});
   EventMenu.push(null);
-  // If Army Lists are used
-  if(evntLogArmyDef == "Enabled" || evntLogArmyList == "Enabled"){
+  // If Deck Lists are used
+  if(evntLogCardList == "Enabled" || evntLogDeckList == "Enabled"){
     EventMenu.push({name:"Delete Players Card DBs", functionName:"fcnDelPlayerCardDB"});
     EventMenu.push({name:"Delete Players Card Lists", functionName:"fcnDelPlayerCardList"});
   }
-  EventMenu.push({name:"Delete Players Records", functionName:"fcnDelEventPlayerRecord"});
+  EventMenu.push({name:"Delete Players Records", functionName:"fcnDelEventRecord"});
   if(evntEscalation == "Enabled") EventMenu.push({name:"Delete Players Escalation Bonus Sheets", functionName:"fcnDelPlayerEscltBonus"});
   
   var TestMenu  = [];

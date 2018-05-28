@@ -6,9 +6,9 @@
 //
 // **********************************************
 
-function fcnLogEventMatch(ss, shtConfig, cfgEvntParam, logStatusPlyr, MatchData){
+function fcnLogPlayerMatch(ss, shtConfig, cfgEvntParam, logStatusPlyr, MatchData){
 
-  Logger.log("Routine: fcnLogEventMatch: %s",logStatusPlyr[2]);
+  Logger.log("Routine: fcnLogPlayerMatch: %s",logStatusPlyr[2]);
  
   // Status Values
   var StatusVal  = logStatusPlyr[0];
@@ -26,7 +26,7 @@ function fcnLogEventMatch(ss, shtConfig, cfgEvntParam, logStatusPlyr, MatchData)
   var shtIDs = shtConfig.getRange(4,7,24,1).getValues();
   var ssEvntPlyrRec = SpreadsheetApp.openById(shtIDs[9][0]);
   var shtEvntPlyrRec = ssEvntPlyrRec.getSheetByName(PlayerName);
-  var rngRecord = "A4:I4";
+  var rngRecord = "A4:F4";
   
   // Match Data Variables
   var matchEventEN = MatchData[0][1];
@@ -49,11 +49,7 @@ function fcnLogEventMatch(ss, shtConfig, cfgEvntParam, logStatusPlyr, MatchData)
   if (evntRecPlyr[0][1] == '') evntRecPlyr[0][1] = 0; // Win
   if (evntRecPlyr[0][2] == '') evntRecPlyr[0][2] = 0; // Loss
   if (evntRecPlyr[0][3] == '') evntRecPlyr[0][3] = 0; // Tie
-  if (evntRecPlyr[0][4] == '') evntRecPlyr[0][4] = 0; // Points Scored
-  if (evntRecPlyr[0][4] == '') evntRecPlyr[0][5] = 0; // Points Allowed
-  if (evntRecPlyr[0][5] == '') evntRecPlyr[0][6] = 0; // Win %
-  if (evntRecPlyr[0][5] == '') evntRecPlyr[0][7] = 0; // Pts Scored  / Match
-  if (evntRecPlyr[0][5] == '') evntRecPlyr[0][8] = 0; // Pts Allowed / Match
+  if (evntRecPlyr[0][5] == '') evntRecPlyr[0][5] = 0; // Win %
   
   // Checks if Match is a Tie
   if((evntPtsGainedMatch == "Enabled" && matchPT1Pts == matchPT2Pts) || (matchTie == "Yes" || matchTie == "Oui")) MatchResult = "Tie";
@@ -131,45 +127,40 @@ function fcnLogEventMatch(ss, shtConfig, cfgEvntParam, logStatusPlyr, MatchData)
   var values = subCreateArray(1,9); 
   // [0][0]= Event Name Cell 1
   // [0][1]= Event Name Cell 2
-  // [0][2]= Game System
-  // [0][3]= Round
-  // [0][4]= Result (Win, Loss, Tie)
-  // [0][5]= Played Against Cell 1
-  // [0][6]= Played Against Cell 2
-  // [0][7]= Points Scored
-  // [0][8]= Points Allowed
+  // [0][2]= Round
+  // [0][3]= Result (Win, Loss, Tie)
+  // [0][4]= Played Against Cell 1
+  // [0][5]= Played Against Cell 2
   
   // Event Name
   if(Language == "English")  values[0][0]= matchEventEN;// Event Name
   if(Language == "Français") values[0][0]= matchEventFR;// Event Name
   
-  // Game System
-  values[0][2]= matchGameSys;
-  
   // Round
-  values[0][3]= matchRound;
+  values[0][2]= matchRound;
   
   // Result
   switch(MatchResult){
     case "Win": {
       // Result (Win, Loss, Tie)
-      if(Language == "English")  values[0][4]= "Win";
-      if(Language == "Français") values[0][4]= "Victoire";
+      if(Language == "English")  values[0][3]= "Win";
+      if(Language == "Français") values[0][3]= "Victoire";
       break;
     }
     case "Loss": {
       // Result (Win, Loss, Tie)
-      if(Language == "English")  values[0][4]= "Loss";
-      if(Language == "Français") values[0][4]= "Défaite";
+      if(Language == "English")  values[0][3]= "Loss";
+      if(Language == "Français") values[0][3]= "Défaite";
       break;
     }
     case "Tie": {
       // Result (Win, Loss, Tie)
-      if(Language == "English")  values[0][4]= "Tie";
-      if(Language == "Français") values[0][4]= "Nulle";
+      if(Language == "English")  values[0][3]= "Tie";
+      if(Language == "Français") values[0][3]= "Nulle";
       break;
     }
   }
+  // Points Scored
   // If Player is Player 1
   if(PlayerName == matchPT1){
     // Played Against

@@ -136,20 +136,6 @@ function fcnUpdateStandings(){
 // **********************************************
 
 function fcnCopyStandingsSheets(ss, shtConfig, cfgEvntParam, cfgColRndSht, RspnRoundNum, AllSheets){
-//function fcnCopyStandingsSheets(){
-//  
-//  var ss = SpreadsheetApp.getActiveSpreadsheet();
-//  
-//  // Config Sheet to get options
-//  var shtConfig = ss.getSheetByName('Config');
-//  var shtIDs = shtConfig.getRange(4,7,24,1).getValues();
-//  var cfgEvntParam = shtConfig.getRange(4,4,48,1).getValues();
-//  var cfgColRspSht = shtConfig.getRange(4,18,16,1).getValues();
-//  var cfgColRndSht = shtConfig.getRange(4,21,16,1).getValues();
-//  var cfgExecData  = shtConfig.getRange(4,24,16,1).getValues();
-//  
-//  var RspnRoundNum = 0;
-//  var AllSheets = 1;
   
   Logger.log("Routine: fcnCopyStandingsSheets");
 
@@ -204,8 +190,8 @@ function fcnCopyStandingsSheets(ss, shtConfig, cfgEvntParam, cfgColRndSht, RspnR
   var ssLgShtFR;
   var RoundGame;
   
-  // Loops through tabs 0-9 (0= Standings, 1= Cumulative Results, 2-9= Round 1-8)
-  for (var sht = 0; sht <= 9; sht++){
+  // Loops through tabs 0-11 (0= Standings, 1= Cumulative Results, 2-11= Round 1-10)
+  for (var sht = 0; sht <= 11; sht++){
     ssMstrSht = ss.getSheets()[sht];
     SheetName = ssMstrSht.getSheetName();
     
@@ -301,7 +287,7 @@ function fcnCopyStandingsSheets(ss, shtConfig, cfgEvntParam, cfgColRndSht, RspnR
       }
       
       // Round Sheet 
-      if(sht >= 2 && sht <= 9){
+      if(sht >= 2 && sht <= 11){
         Logger.log('Round %s Sheet Updated',sht-1);
         ssMstrStartDate = ssMstrSht.getRange(3,1).getValue();
         ssMstrEndDate   = ssMstrSht.getRange(4,1).getValue();

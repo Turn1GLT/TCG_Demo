@@ -43,22 +43,27 @@ function fcnCrtMatchReportForm_TCG() {
   var evntPtsGainedMatch = cfgEvntParam[27][0];
   var evntMatchPtsMax =    cfgEvntParam[28][0];
   var evntTiePossible =    cfgEvntParam[32][0];
+  var evntNbCardPack =     cfgEvntParam[42][0];
   
   var RoundNum = shtConfig.getRange(7,2).getValue();
   var RoundArray = new Array(1); RoundArray[0] = RoundNum;
   
   var NbPlyr = shtConfig.getRange(13,2).getValue();
   var NbTeam = shtConfig.getRange(14,2).getValue();
-  
-  // Log Sheet
-  var shtLog = SpreadsheetApp.openById(shtIDs[1][0]).getSheetByName('Log');
 
   // Match Form ID from the Config File
   var ssID =        shtIDs[0][0];
+  var ssCardDBID =  shtIDs[2][0];
   var FormIdEN =    shtIDs[11][0];
   var FormIdFR =    shtIDs[12][0];
   var folderImgID = shtIDs[23][0];
- 
+
+  // Log Sheet
+  var shtLog = SpreadsheetApp.openById(shtIDs[1][0]).getSheetByName('Log');
+  
+  // Card DB Sheet
+  var ssCardDB = SpreadsheetApp.openById(ssCardDBID);
+  
   // Row Column Values to Write Form IDs and URLs
   var rowFormEN  = 15;
   var rowFormFR  = 16;
@@ -69,6 +74,7 @@ function fcnCrtMatchReportForm_TCG() {
   var shtTxtReport = ssTexts.getSheetByName('Match Report TCG');
   var ConfirmMsgEN = shtTxtReport.getRange(4,2).getValue();
   var ConfirmMsgFR = shtTxtReport.getRange(4,3).getValue();
+  
   
   var QuestionOrder = 2;
     
@@ -100,14 +106,6 @@ function fcnCrtMatchReportForm_TCG() {
   var Team2List;
   var TeamListLength;
   
-  var SctPackOpenEN;
-  var SctPackOpenFR;
-  var CardValidation;
-  var ExpansionNum = shtConfig.getRange(3,31).getValue();
-  var ExpansionSet = shtConfig.getRange(4,34,ExpansionNum,1).getValues();
-  var ExpansionList = new Array(ExpansionNum);
-
-  
   var shtResp1;
   var shtResp2;
   var shtRespName1;
@@ -115,7 +113,10 @@ function fcnCrtMatchReportForm_TCG() {
   var IndexResponses = ss.getSheetByName("Responses").getIndex();
   var FormsCreated = 0;
   var FormsDeleted = 0;
-    
+  
+  var ExpnIndex;
+  var ExpnTitle;
+  
   // Insert ui to confirm
   var ui = SpreadsheetApp.getUi();
   var title;
@@ -197,7 +198,7 @@ function fcnCrtMatchReportForm_TCG() {
     .setDescription("SVP, entrez les informations suivantes pour soumettre votre rapport de match");
     
     // Create Player List for Match Report
-    if(NbPlyr > 0) PlayerList = subCrtMatchRepPlyrList(shtConfig, shtPlayers, cfgEvntParam);
+    if(NbPlyr > 0) PlayerList = subCrtMatchRepComptrList(shtConfig, shtPlayers, cfgEvntParam);
     
     // Create Team List for Match Report
     if(NbTeam > 0) TeamList = subCrtMatchRepTeamList(shtConfig, shtTeams, cfgEvntParam);
@@ -208,7 +209,7 @@ function fcnCrtMatchReportForm_TCG() {
       // Look for Col Equal to Question Order
       if(QuestionOrder == cfgReportFormCnstrVal[i][1]){
         Logger.log("Switch");
-        Logger.log("Qstn:%s - Value:%s",QuestionOrder,cfgReportFormCnstrVal[i][1]);
+        //Logger.log("Qstn:%s - Value:%s",QuestionOrder,cfgReportFormCnstrVal[i][1]);
         Logger.log(cfgReportFormCnstrVal[i][0]);
         switch(cfgReportFormCnstrVal[i][0]){
             
@@ -465,6 +466,23 @@ function fcnCrtMatchReportForm_TCG() {
             }
             break;
           }
+            
+            //---------------------------------------------
+            // SCORE
+          case 'Score':{ 
+            // English
+            formEN.addMultipleChoiceItem()
+            .setTitle("Score")
+            .setRequired(true)
+            .setChoiceValues(["2-0","2-1"]);
+            
+            // French
+            formFR.addMultipleChoiceItem()
+            .setTitle("Score")
+            .setRequired(true)
+            .setChoiceValues(["2-0","2-1"]);
+            break;
+          }
 
             //---------------------------------------------
             // LOCATION SECTION
@@ -487,151 +505,149 @@ function fcnCrtMatchReportForm_TCG() {
             break;
           }
        
-            //---------------------------------------------
-            // SCORE
-          case 'Score':{ 
-            // English
-            formEN.addMultipleChoiceItem()
-            .setTitle("Score")
-            .setRequired(true)
-            .setChoiceValues(["2-0","2-1"]);
-            
-            // French
-            formFR.addMultipleChoiceItem()
-            .setTitle("Score")
-            .setRequired(true)
-            .setChoiceValues(["2-0","2-1"]);
-            break;
-          }
+
             
             //---------------------------------------------
             // PUNISHMENT PACK
           case 'Punishment Pack':{ 
-            // English
-            formEN.addPageBreakItem().setTitle("Punishment Pack");
-            // Pack Opened?
-            SctPackOpenEN = formEN.addMultipleChoiceItem().setTitle("Did you open a Punishment Pack?");
-            SctPackOpenEN.setChoices([SctPackOpenEN.createChoice("Yes", FormApp.PageNavigationType.CONTINUE), 
-                                      SctPackOpenEN.createChoice("No", FormApp.PageNavigationType.SUBMIT)]);   
             
-            // French
-            formFR.addPageBreakItem().setTitle("Pack de Punition");
-            // Pack Opened?
-            SctPackOpenFR = formFR.addMultipleChoiceItem().setTitle("Avez-vous ouvert un Pack de Punition?");
-            SctPackOpenFR.setChoices([SctPackOpenFR.createChoice("Oui", FormApp.PageNavigationType.CONTINUE), 
-                                      SctPackOpenFR.createChoice("Non", FormApp.PageNavigationType.SUBMIT)]);   
+            var pagePackOpenEN;
+            var pagePackOpenFR;
+            var pageExpSetEN;
+            var pageExpSetFR;
+            var pageExpnListEN = new Array(100);
+            var pageExpnListFR = new Array(100);
+            var pageName;
+            var pageItem;
             
-            //---------------------------------------------
-            // EXPANSION SET
-            // Transfers Expansion Set Double Array to Single Array
-            for(var i = 0; i < ExpansionNum; i++){
-              ExpansionList[i] = ExpansionSet[ExpansionNum-1 - i][0];
+            var sctPackOpenEN;
+            var sctPackOpenFR;
+            var sctExpChcEN;
+            var sctExpChcFR;
+            
+            var ExpansionNb = shtConfig.getRange(3,31).getValue();
+            var ExpansionSet = shtConfig.getRange(3,32,ExpansionNb+1,3).getValues(); 
+            // col[0] = Expansion Num, col[1] = Expansion Abbrv, col[2] = Expansion Name
+            var ExpansionList = new Array(ExpansionNb+1);
+            var CardListSet = new Array(ExpansionNb+1);
+            var chcExpEN = new Array(ExpansionNb+1);
+            var chcExpFR = new Array(ExpansionNb+1);
+            
+            // EXPANSION SET LIST AND CARD LIST
+            // Transfers Expansion Set Double Array to Single Array 
+            for(var SetNb = 1; SetNb <= ExpansionNb; SetNb++){
+              ExpansionList[SetNb] = ExpansionSet[SetNb][2];
+              // Create Card List for each Set
+              CardListSet[SetNb] = fcnCardListPerSet(ssCardDB, ExpansionSet[SetNb][0]);
+              //ss.getSheetByName("Test").getRange(40,SetNb,CardListSet[SetNb].length,1).setValues(CardListSet[SetNb]);
             }
             
-            // English
-            formEN.addPageBreakItem().setTitle("Expansion Set").setHelpText("Please select the expansion set of your punishment pack.");
-            formEN.addListItem()
-            .setTitle("Expansion Set")
-            .setRequired(true)
-            .setChoiceValues(ExpansionList);    
             
+//            // PUNISHMENT PACK QUESTION
+//            // English
+//            pagePackOpenEN = formEN.addPageBreakItem().setTitle("Punishment Pack");
+//            // Pack Opened?
+//            sctPackOpenEN = formEN.addMultipleChoiceItem()
+//            .setTitle("Did you open a Punishment Pack?")
+//            .setRequired(true);
+//             
+//            // French
+//            pagePackOpenFR = formFR.addPageBreakItem().setTitle("Pack de Punition");
+//            // Pack Opened?
+//            sctPackOpenFR = formFR.addMultipleChoiceItem()
+//            .setTitle("Avez-vous ouvert un Pack de Punition?")
+//            .setRequired(true);
+ 
+            
+            // CREATE EXPANSION SET SELECTION
+            // English
+            pageExpSetEN = formEN.addPageBreakItem().setTitle("Expansion Set")
+            .setHelpText("Please select the expansion set of your punishment pack.");
+            sctExpChcEN = formEN.addListItem()
+            .setTitle("Expansion")
+            .setRequired(true);
+
             // French
-            formFR.addPageBreakItem().setTitle("Set d'Expansion").setHelpText("SVP, sélectionnez le set d'expansion de votre Booster.");
-            formFR.addListItem()
-            .setTitle("Expansion Set")
-            .setRequired(true)
-            .setChoiceValues(ExpansionList);
+            pageExpSetFR = formFR.addPageBreakItem().setTitle("Set d'Expansion")
+            .setHelpText("SVP, sélectionnez le set d'expansion de votre Booster.");
+            sctExpChcFR = formFR.addListItem()
+            .setTitle("Expansion")
+            .setRequired(true);
             
-            //---------------------------------------------
-            // CARD LIST
-            
-            // Card Number Validation
-            CardValidation = FormApp.createTextValidation()
-            .setHelpText("Enter a number between 1 and 300.")
-            .requireNumberBetween(1, 300)
-            .build();
-            
-            // English
-            formEN.addPageBreakItem()
-            .setTitle("Card List")
-            .setHelpText("Enter each card number of your pack. The Card Number is the first number in the lower left side corner (red).");
-            
-            
-            // CARD IMAGE
-            var folderImg = DriveApp.getFolderById(folderImgID);
-            var files = folderImg.getFiles();
-            
-            while (files.hasNext()) {
-              var file = files.next();
-              Logger.log(file.getName());
-              if(file.getName() == "Card.jpg") var imgCard = file.getBlob();
+            // Create Expansion Card List Sections
+            for(var SetNb = ExpansionNb; SetNb > 0; SetNb--){
               
+              // SET SECTION
+              // Set Expansion Index (for Form routing)
+              ExpnIndex = SetNb * 10;
+              
+              // ENGLISH
+              // Title
+              ExpnTitle = ExpansionList[SetNb] + " Card List";
+              // Set Expansion Set Page
+              pageExpnListEN[ExpnIndex] = formEN.addPageBreakItem().setTitle(ExpnTitle);
+              pageExpnListEN[ExpnIndex].setHelpText("Enter each card name of your pack.");
+              
+              // Logger.log("Section Title: %s - Index %s",ExpnTitle,ExpnIndex);
+              
+              // FRENCH
+              // Title
+              ExpnTitle = "Liste de cartes " + ExpansionList[SetNb];
+              // Set Unit Page
+              pageExpnListFR[ExpnIndex] = formFR.addPageBreakItem().setTitle(ExpnTitle);
+              pageExpnListFR[ExpnIndex].setHelpText("Entrez le nom de chaque carte de votre paquet.");
+              
+              // CARD LIST
+              // ENGLISH
+              // Loop to create all cards of the pack
+              for(var card = 1; card <= evntNbCardPack; card++){
+                formEN.addListItem()
+                .setTitle("Card " + card)
+                .setRequired(true)
+                .setChoiceValues(CardListSet[SetNb]);
+              }
+              
+              // FRENCH
+              // Loop to create all cards of the pack
+              for(var card = 1; card <= evntNbCardPack; card++){
+                formFR.addListItem()
+                .setTitle("Carte " + card)
+                .setRequired(true)
+                .setChoiceValues(CardListSet[SetNb]);
+              }
             }
             
-            formEN.addImageItem()
-            .setImage(imgCard);
-            
-            // Loop to create first 13 cards of the pack
-            for(var card = 1; card<=13; card++){
-              formEN.addTextItem()
-              .setTitle("Card " + card)
-              .setRequired(true)
-              .setValidation(CardValidation);
+            // Set Choices for Expansion Sets with Navigation to appropriate section
+            for(var i = 0; i <= ExpansionNb; i++){
+              Logger.log(i);
+              // If a pack was opened              
+              if(i<ExpansionNb){
+                chcExpEN[i] = sctExpChcEN.createChoice(ExpansionList[ExpansionNb-i],pageExpnListEN[(ExpansionNb-i)*10]);
+                chcExpFR[i] = sctExpChcFR.createChoice(ExpansionList[ExpansionNb-i],pageExpnListFR[(ExpansionNb-i)*10]);
+              }
+              
+              // If no pack was opened
+              if(i == ExpansionNb){
+                chcExpEN[i] = sctExpChcEN.createChoice("No Pack Opened", FormApp.PageNavigationType.SUBMIT);
+                chcExpFR[i] = sctExpChcFR.createChoice("Pas de paquet ouvert", FormApp.PageNavigationType.SUBMIT);
+              }
+              Logger.log(chcExpEN);
             }
             
-            // Create last card to specify Masterpiece Number if applicable 
-            formEN.addTextItem()
-            .setTitle("Card 14 / Masterpiece")
-            .setHelpText("If you opened a Masterpiece, Please enter the card number here (Kaladesh Invention, Amonkhet Invocation)")
-            .setRequired(true)
-            .setValidation(CardValidation);
-            
-            // Create Masterpiece Selection
-            formEN.addMultipleChoiceItem()
-            .setTitle("Masterpiece")
-            .setHelpText("Did you open a Masterpiece Foil (Kaladesh Invention, Amonkhet Invocation)")
-            .setRequired(true)
-            .setChoiceValues(["Yes","No"]);    
-            
-            // French
-            formFR.addPageBreakItem()
-            .setTitle("Liste de Cartes")
-            .setHelpText("Entrez le numéro de chaque carte de votre paquet. Le numéro de carte est le premier numéro dans le coin inférieur gauche de la carte. (en rouge)");
-            
-            formFR.addImageItem()
-            .setImage(imgCard);
-            
-            // Loop to create first 13 cards of the pack
-            for(var card = 1; card<=13; card++){
-              formFR.addTextItem()
-              .setTitle("Carte " + card)
-              .setRequired(true)
-              .setValidation(CardValidation);
-            }
-            
-            // Create last card to specify Masterpiece Number if applicable 
-            formFR.addTextItem()
-            .setTitle("Carte 14 / Masterpiece")
-            .setHelpText("Si vous avez ouvert une Masterpiece, SVP, entrez son numéro ici (Kaladesh Invention, Amonkhet Invocation)")
-            .setRequired(true)
-            .setValidation(CardValidation);
-            
-            // Create Masterpiece Selection
-            formFR.addMultipleChoiceItem()
-            .setTitle("Masterpiece")
-            .setHelpText("Avez-vous ouvert une Masterpiece (Kaladesh Invention, Amonkhet Invocation)")
-            .setRequired(true)
-            .setChoiceValues(["Oui","Non"]);  
+            // Set Choices for Expansion Pack
+            sctExpChcEN.setChoices(chcExpEN);
+            sctExpChcFR.setChoices(chcExpFR);  
+
             break;
           }
-            
-            
+                      
           default : break;
         }
         // Increment to Next Question
         QuestionOrder++;
         // Reset Loop if new question was added
         i = -1;
+          
       }
       
       //---------------------------------------------

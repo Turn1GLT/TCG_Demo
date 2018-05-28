@@ -1,3 +1,51 @@
+// **********************************************
+// function onSubmitTCG_()
+//
+// This function analyzes the form submitted
+// and executes the appropriate functions
+//
+// **********************************************
+
+function onTestSubmitTCG_DemoMtG(e) {
+      
+  // Get Row from New Response
+  var RowResponse = 2;
+  var shtNameTest = "RegPlyr EN";
+    
+  // Get Sheet from New Response
+  var shtResponse = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(shtNameTest);
+  
+  var ShtName = shtResponse.getSheetName();
+  
+  Logger.log("------- New Response Received -------");
+  Logger.log("Sheet: %s",ShtName);
+  Logger.log("Response Row: %s",RowResponse);
+  
+  // If Form Submitted is a Match Report, process results
+  if(ShtName == "MatchResp EN" || ShtName == "MatchResp FR") {
+    Logger.log("Match Report Submission Received");
+    fcnProcessMatchTCG();
+  }
+  
+  // If Form Submitted is a Player Subscription, Register Player
+  if(ShtName == "RegPlyr EN" || ShtName == "RegPlyr FR"){
+    Logger.log("Player Registration Received");
+    fcnRegistrationPlyrTCG(shtResponse, RowResponse);
+  }
+
+  // If Form Submitted is a Team Subscription, Register Team
+  if(ShtName == "RegTeam EN" || ShtName == "RegTeam FR"){
+    Logger.log("Team Registration Received");
+    fcnRegistrationTeamTCG(shtResponse, RowResponse);
+  }
+  
+  // If Form Submitted is a Round Bonus Unit, Enter Bonus Unit
+  if(ShtName == "EscltBonus EN" || ShtName == "EscltBonus FR"){
+    Logger.log("Escalation Bonus Submission Received");
+    fcnEscltBonusTCG(shtResponse, RowResponse);
+  }
+} 
+
 function tstCreateMember(){
 
   var Member = subCreateArray(16,1);

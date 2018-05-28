@@ -317,6 +317,7 @@ function fcnAnalyzeResultsTCG(ss, shtConfig, cfgEvntParam, cfgColRspSht, cfgColR
   var colArrRspnPts2 =    cfgColMatchRep[ 8][0]-1;
   var colArrRspnTie =     cfgColMatchRep[ 9][0]-1;
   var colArrRspnLoc =     cfgColMatchRep[10][0]-1;
+  var colArrRspnExpn =    cfgColMatchRep[14][0]-1;
   var colArrRspnPlyrSub = cfgColMatchRep[19][0]-1;
   
   // Event Parameters
@@ -370,7 +371,8 @@ function fcnAnalyzeResultsTCG(ss, shtConfig, cfgEvntParam, cfgColRspSht, cfgColR
   EmailAddresses[2][1] = '';
   
   // Card List Variables
-  var CardList = new Array(evntNbCardsTCG); // 0 = Set Name, 1-14 = Card Numbers, 15 = Card 14 is Masterpiece (Y-N)
+  var CardList = new Array(evntNbCardsTCG); // 0 = Set Name, 1-evntNbCardsTCG = Card Names
+  var flagPackOpen = 0;
   
   // Create Array of evntNbCardsTCG x 4 where each row is Card 1-14 and each column is Card Info
   // Row:    0 = Set Name,  1-14 = Card Numbers, 15 = Card 14 is Masterpiece (Y-N)
@@ -426,6 +428,7 @@ function fcnAnalyzeResultsTCG(ss, shtConfig, cfgEvntParam, cfgColRspSht, cfgColR
     var RspnDataTeam2    = ResponseData[0][colArrRspnTeam2];  // Losing Team
     var RspnDataPts2     = ResponseData[0][colArrRspnPts2];   // Losing Points
     var RspnDataTie      = ResponseData[0][colArrRspnTie];    // Tie
+    var RspnDataExpnSet  = ResponseData[0][colArrRspnLoc];    // Match Location (Store Yes or No)
     var RspnDataLocation = ResponseData[0][colArrRspnLoc];    // Match Location (Store Yes or No)
     
     var RspnDataPrcssd     = ResponseData[0][colArrRspnDataPrcsd];// Data Processed Status
@@ -541,6 +544,30 @@ function fcnAnalyzeResultsTCG(ss, shtConfig, cfgEvntParam, cfgColRspSht, cfgColR
               if(evntTiePossible == "Enabled")   MatchData[5][0] = ResponseData[0][colArrRspnTie];  // Game is a Tie
               if(evntLocationBonus == "Enabled") MatchData[6][0] = ResponseData[0][colArrRspnLoc];  // Location (Store Y/N)
               
+              // Builds the Expansion Pack Card List
+              if (evntGameType == 'TCG'){
+                // Get Number of Expansion Sets Legal
+                var ExpSetNb = shtConfig.getRange(3, 31).getValue();
+                // Get Set Names and Numbers
+                var ExpSetData = shtConfig.getRange(4, 32, ExpSetNb, 3).getValues();
+                
+                // Find the Column where the cards have been entered
+                // Sets are ordered most to least recent. Set #1 is always last
+                var ExpSetName = ResponseData[0][colArrRspnExpn];
+                Logger.log('Expansion Set: %s',ExpSetName);
+                for(var i = 0; i < ExpSetNb; i++){
+                  if(ExpSetName == ExpSetData[i][2]) {
+                    var colRespFirstCard = colArrRspnExpn + 1 + ((ExpSetNb - ExpSetData[i][0]) * evntNbCardsTCG);
+                    flagPackOpen = 1;
+                    i = ExpSetNb;
+                  }
+                }
+                
+                for (var card = 0; card < evntNbCardsTCG; card++){
+                  CardList[card] = ResponseData[0][colRespFirstCard + card];
+                }
+              }
+              
               // Execute function to populate Match Result Sheet from Response Sheet
               MatchData = fcnPostMatchResultsTCG(ss, shtConfig, ResponseData, MatchingRspnData, MatchID, MatchData);
               MatchPostStatus = MatchData[25][0];
@@ -558,28 +585,27 @@ function fcnAnalyzeResultsTCG(ss, shtConfig, cfgEvntParam, cfgColRspSht, cfgColR
                 
                 // Log Players Match Data
                 logStatusPT1[2] = PT1;
-                logStatusPT1 = fcnLogEventMatch(ss, shtConfig, cfgEvntParam, logStatusPT1, MatchData);
+                logStatusPT1 = fcnLogPlayerMatch(ss, shtConfig, cfgEvntParam, logStatusPT1, MatchData);
                 if(exeMemberProfileLink == "Enabled") fcnLogMemberMatch(ss, shtConfig, logStatusPT1, MatchData);
                 Logger.log('Event Player Record Status for %s : %s',logStatusPT1[2],logStatusPT1[1]);
                 
                 logStatusPT2[2] = PT2;
-                logStatusPT2 = fcnLogEventMatch(ss, shtConfig, cfgEvntParam, logStatusPT2, MatchData);
+                logStatusPT2 = fcnLogPlayerMatch(ss, shtConfig, cfgEvntParam, logStatusPT2, MatchData);
                 if(exeMemberProfileLink == "Enabled") fcnLogMemberMatch(ss, shtConfig, logStatusPT2, MatchData);
                 Logger.log('Event Player Record Status for %s : %s',logStatusPT2[2],logStatusPT2[1]);
                 
                 // If Event Game Type is TCG
                 // Copies all cards added to the Card Database
                 if (evntGameType == 'TCG'){
-                  for (var card = 0; card < evntNbCardsTCG; card++){
-                    CardList[card] = ResponseData[0][card+8];
-                  }
-                  // If Pack was opened, Update Card Database and Card Pool for Appropriate player
-                  if (ResponseData[0][7] != 'No' && ResponseData[0][7] != 'Non') {
+                   // If Pack was opened, Update Card Database and Card Pool for Appropriate player
+                  if (flagPackOpen == 1) {
+                    
                     // Updates the Status while processing
                     if(Status[0] >= 0){
                       Status[0] = 5; 
                       Status[1] = subUpdateStatus(shtRspn, RspnRow, colStatus, colStatusMsg, Status[0]);
                     }
+                    
                     // Update the Card DB and Card List
                     PackData = fcnUpdateCardDB(shtConfig, RspnDataPlyr2, CardList, PackData, shtTest);
                     Logger.log("Routine: fcnAnalyzeResultsTCG");
@@ -703,7 +729,7 @@ function fcnAnalyzeResultsTCG(ss, shtConfig, cfgEvntParam, cfgColRspSht, cfgColR
           Status[1] = subUpdateStatus(shtRspn, RspnRow, colStatus, colStatusMsg, Status[0]);
         }
         
-        // fcnPostMatchEventLog();
+        fcnPostMatchEventLog();
       }
       
       // Call the Email Function, sends Match Data if Send Email Option is Enabled
